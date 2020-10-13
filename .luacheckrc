@@ -1,5 +1,6 @@
 globals = {
-	"block2mod"
+	"block2mod",
+	"worldedit"
 }
 
 read_globals = {
