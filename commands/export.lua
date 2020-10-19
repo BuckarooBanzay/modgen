@@ -21,6 +21,7 @@ minetest.register_chatcommand("export", {
 			pos1 = pos1,
 			pos2 = pos2,
 			total_parts = total_parts,
+			node_mapping = {},
 			schemapath = block2mod.export_path,
 			playername = name,
 			current_part = 0
@@ -66,6 +67,27 @@ local function write_mapblock(node_ids, param1, param2, filename)
   end
 end
 
+local function write_metadata(filename, metadata)
+	local file = io.open(filename,"wb")
+	local json = minetest.write_json(metadata)
+
+	file:write(minetest.compress(json, "deflate"))
+	file:close()
+end
+
+local function write_manifest(filename, ctx)
+	local file = io.open(filename,"w")
+	local json = minetest.write_json({
+		pos1 = ctx.pos1,
+		pos2 = ctx.pos1,
+		total_parts = ctx.total_parts,
+		node_mapping = ctx.node_mapping
+	})
+
+	file:write(json)
+	file:close()
+end
+
 function block2mod.worker(ctx)
 
 	-- shift position
@@ -75,6 +97,7 @@ function block2mod.worker(ctx)
 
 	if not ctx.current_pos then
 		-- done
+		write_manifest(ctx.schemapath .. "/manifest.json", ctx)
 		minetest.chat_send_player(ctx.playername, "[block2mod] Export done")
 		return
 	end
@@ -87,14 +110,38 @@ function block2mod.worker(ctx)
   pos2.y = math.min(pos2.y, ctx.pos2.y)
   pos2.z = math.min(pos2.z, ctx.pos2.z)
 
-  local data = block2mod.serialize_part(ctx.current_pos, pos2)
 	local relative_pos = vector.subtract(ctx.current_pos, ctx.pos1)
+  local data = block2mod.serialize_part(ctx.current_pos, pos2)
 
-	write_mapblock(
-		data.node_ids, data.param1, data.param2,
-		ctx.schemapath .. "/mapblock_" .. minetest.pos_to_string(relative_pos)
-	)
+	-- populate node_mapping and check if the mapblock contains only air
+	local only_air = true
+	for name, id in pairs(data.node_mapping) do
+		ctx.node_mapping[name] = id
+		if name ~= "air" then
+			-- mapblock is not empty
+			only_air = false
+		end
+	end
 
-	minetest.after(0.5, block2mod.worker, ctx)
+	if only_air then
+		-- nothing to see here
+		minetest.after(0.2, block2mod.worker, ctx)
+
+	else
+		-- write mapblock to disk
+		write_mapblock(
+			data.node_ids, data.param1, data.param2,
+			ctx.schemapath .. "/mapblock-" .. relative_pos.x .. "_" .. relative_pos.y .. "_" .. relative_pos.z .. ".bin"
+		)
+
+		if data.metadata.meta or data.metadata.timers then
+			write_metadata(
+				ctx.schemapath .. "/mapblock-" .. relative_pos.x .. "_" .. relative_pos.y .. "_" .. relative_pos.z .. ".meta.bin",
+				data.metadata
+			)
+		end
+
+		minetest.after(0.5, block2mod.worker, ctx)
+	end
 
 end
