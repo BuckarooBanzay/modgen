@@ -1,6 +1,6 @@
 
 function block2mod.iterator_next(pos1, pos2, pos)
-	local part_length = block2mod.part_length
+	local part_length = block2mod.PART_LENGTH
 
 	if not pos then
 		pos = {x = pos1.x, y = pos1.y, z = pos1.z}

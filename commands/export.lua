@@ -23,16 +23,50 @@ minetest.register_chatcommand("export", {
 			pos1 = pos1,
 			pos2 = pos2,
 			total_parts = total_parts,
-			schemaname = schemaname,
+			schemapath = minetest.get_worldpath() .. "/block2mod/" .. schemaname,
+			playername = name,
 			current_part = 0
 		}
 
+		minetest.mkdir(ctx.schemapath)
+
 		minetest.after(0, block2mod.worker, ctx)
 
-		return true
+		return true, "Export started!"
   end
 })
 
+local function int_to_bytes(i)
+	local x =i + 32768
+	local h = math.floor(x/256) % 256;
+	local l = math.floor(x % 256);
+	return(string.char(h, l));
+end
+
+local function write_mapblock(node_ids, param1, param2, filename)
+  local file = io.open(filename,"wb")
+  local data = ""
+	assert(#node_ids == #param1)
+	assert(#node_ids == #param2)
+
+  for i=1,#node_ids do
+    data = data .. int_to_bytes(node_ids[i])
+  end
+  for i=1,#param1 do
+    data = data .. string.char(param1[i])
+  end
+  for i=1,#param2 do
+    data = data .. string.char(param2[i])
+  end
+
+  file:write(minetest.compress(data, "deflate"))
+
+  if file and file:close() then
+    return
+  else
+    error("write to '" .. filename .. "' failed!")
+  end
+end
 
 function block2mod.worker(ctx)
 
@@ -41,13 +75,27 @@ function block2mod.worker(ctx)
 	ctx.current_part = ctx.current_part + 1
   ctx.progress_percent = math.floor(ctx.current_part / ctx.total_parts * 100 * 10) / 10
 
-	if not ctx.currentpos then
+	if not ctx.current_pos then
 		-- done
+		minetest.chat_send_player(ctx.playername, "[block2mod] Export done")
 		return
 	end
 
-	minetest.chat_send_player(ctx.playername, "[block2mod] Upload pos: " .. minetest.pos_to_string(ctx.current_pos) ..
+	minetest.chat_send_player(ctx.playername, "[block2mod] Export pos: " .. minetest.pos_to_string(ctx.current_pos) ..
     " Progress: " .. ctx.progress_percent .. "% (" .. ctx.current_part .. "/" .. ctx.total_parts .. ")")
+
+	local pos2 = vector.add(ctx.current_pos, block2mod.PART_LENGTH - 1)
+	pos2.x = math.min(pos2.x, ctx.pos2.x)
+  pos2.y = math.min(pos2.y, ctx.pos2.y)
+  pos2.z = math.min(pos2.z, ctx.pos2.z)
+
+  local data = block2mod.serialize_part(ctx.current_pos, pos2)
+	local relative_pos = vector.subtract(ctx.current_pos, ctx.pos1)
+
+	write_mapblock(
+		data.node_ids, data.param1, data.param2,
+		ctx.schemapath .. "/mapblock_" .. minetest.pos_to_string(relative_pos)
+	)
 
 	minetest.after(0.5, block2mod.worker, ctx)
 

@@ -10,5 +10,6 @@ block2mod = {
 dofile(MP.."/functions.lua")
 dofile(MP.."/markers.lua")
 dofile(MP.."/serialize.lua")
+dofile(MP.."/iterator_next.lua")
 dofile(MP.."/commands/export.lua")
 dofile(MP.."/commands/pos.lua")
