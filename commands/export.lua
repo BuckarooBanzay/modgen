@@ -35,58 +35,6 @@ minetest.register_chatcommand("export", {
   end
 })
 
-local function int_to_bytes(i)
-	local x =i + 32768
-	local h = math.floor(x/256) % 256;
-	local l = math.floor(x % 256);
-	return(string.char(h, l));
-end
-
-local function write_mapblock(node_ids, param1, param2, filename)
-  local file = io.open(filename,"wb")
-  local data = ""
-	assert(#node_ids == #param1)
-	assert(#node_ids == #param2)
-
-  for i=1,#node_ids do
-    data = data .. int_to_bytes(node_ids[i])
-  end
-  for i=1,#param1 do
-    data = data .. string.char(param1[i])
-  end
-  for i=1,#param2 do
-    data = data .. string.char(param2[i])
-  end
-
-  file:write(minetest.compress(data, "deflate"))
-
-  if file and file:close() then
-    return
-  else
-    error("write to '" .. filename .. "' failed!")
-  end
-end
-
-local function write_metadata(filename, metadata)
-	local file = io.open(filename,"wb")
-	local json = minetest.write_json(metadata)
-
-	file:write(minetest.compress(json, "deflate"))
-	file:close()
-end
-
-local function write_manifest(filename, ctx)
-	local file = io.open(filename,"w")
-	local json = minetest.write_json({
-		pos1 = ctx.pos1,
-		pos2 = ctx.pos1,
-		total_parts = ctx.total_parts,
-		node_mapping = ctx.node_mapping
-	})
-
-	file:write(json)
-	file:close()
-end
 
 function block2mod.worker(ctx)
 
@@ -97,7 +45,7 @@ function block2mod.worker(ctx)
 
 	if not ctx.current_pos then
 		-- done
-		write_manifest(ctx.schemapath .. "/manifest.json", ctx)
+		block2mod.write_manifest(ctx.schemapath .. "/manifest.json", ctx)
 		minetest.chat_send_player(ctx.playername, "[block2mod] Export done")
 		return
 	end
@@ -129,15 +77,15 @@ function block2mod.worker(ctx)
 
 	else
 		-- write mapblock to disk
-		write_mapblock(
-			data.node_ids, data.param1, data.param2,
-			ctx.schemapath .. "/mapblock-" .. relative_pos.x .. "_" .. relative_pos.y .. "_" .. relative_pos.z .. ".bin"
+		block2mod.write_mapblock(
+			block2mod.get_mapblock_name(relative_pos, "bin"),
+			data.node_ids, data.param1, data.param2
 		)
 
 		-- write metadata if available
 		if data.has_metadata then
-			write_metadata(
-				ctx.schemapath .. "/mapblock-" .. relative_pos.x .. "_" .. relative_pos.y .. "_" .. relative_pos.z .. ".meta.bin",
+			block2mod.write_metadata(
+				block2mod.get_mapblock_name(relative_pos, "meta.bin"),
 				data.metadata
 			)
 		end
