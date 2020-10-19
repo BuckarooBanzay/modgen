@@ -1,8 +1,6 @@
 
 minetest.register_chatcommand("export", {
-	func = function(name, param)
-
-		local schemaname = param or "block2mod-export"
+	func = function(name)
 
     local pos1 = block2mod.get_pos(1, name)
     local pos2 = block2mod.get_pos(2, name)
@@ -23,7 +21,7 @@ minetest.register_chatcommand("export", {
 			pos1 = pos1,
 			pos2 = pos2,
 			total_parts = total_parts,
-			schemapath = minetest.get_worldpath() .. "/block2mod/" .. schemaname,
+			schemapath = block2mod.export_path,
 			playername = name,
 			current_part = 0
 		}

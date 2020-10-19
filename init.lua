@@ -4,7 +4,8 @@ local MP = minetest.get_modpath("block2mod")
 block2mod = {
   pos1 = {},
   pos2 = {},
-  PART_LENGTH = 16
+  PART_LENGTH = 16,
+  export_path = minetest.get_worldpath() .. "/mapexport"
 }
 
 dofile(MP.."/functions.lua")
