@@ -134,7 +134,8 @@ function block2mod.worker(ctx)
 			ctx.schemapath .. "/mapblock-" .. relative_pos.x .. "_" .. relative_pos.y .. "_" .. relative_pos.z .. ".bin"
 		)
 
-		if data.metadata.meta or data.metadata.timers then
+		-- write metadata if available
+		if data.has_metadata then
 			write_metadata(
 				ctx.schemapath .. "/mapblock-" .. relative_pos.x .. "_" .. relative_pos.y .. "_" .. relative_pos.z .. ".meta.bin",
 				data.metadata

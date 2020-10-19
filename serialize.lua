@@ -30,6 +30,7 @@ function block2mod.serialize_part(pos1, pos2, node_count)
     param2 = {},
     node_mapping = {}, -- name -> id
     metadata = {},
+    has_metadata = false,
     size = vector.add( vector.subtract(pos2, pos1), 1 )
   }
 
@@ -75,6 +76,7 @@ function block2mod.serialize_part(pos1, pos2, node_count)
       for index = 1, #invlist do
         local itemstack = invlist[index]
         if itemstack.to_string then
+          data.has_metadata = true
           invlist[index] = itemstack:to_string()
         end
       end
@@ -92,6 +94,7 @@ function block2mod.serialize_part(pos1, pos2, node_count)
       local timer = minetest.get_node_timer(pos)
       local relative_pos = vector.subtract(pos, pos1)
       if timer:is_started() then
+        data.has_metadata = true
         data.metadata.timers[minetest.pos_to_string(relative_pos)] = {
           timeout = timer:get_timeout(),
           elapsed = timer:get_elapsed()
