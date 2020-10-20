@@ -12,6 +12,34 @@ local function get_mapblock_pos(pos)
   }
 end
 
+local function get_mapblock_name(prefix, pos, suffix)
+	return prefix .. "mapblock-" ..
+		pos.x .. "_" .. pos.y .. "_" .. pos.z .. "." .. suffix
+end
+
+local function read_compressed(filename)
+  local file = io.open(filename, "rb")
+  if file then
+    local data = file:read("*all")
+    return minetest.decompress(data, "deflate")
+  end
+end
+
+local function read_mapblock_data(mapblock)
+  local nodedata = read_compressed(get_mapblock_name(MP .. "/map/", mapblock, "bin"))
+  local metadata = read_compressed(get_mapblock_name(MP .. "/map/", mapblock, "meta.bin"))
+
+  if nodedata then
+    local result = {
+      -- TODO
+    }
+
+    -- TODO: metadata
+
+    return result
+  end
+end
+
 return function()
 
   local manifest = read_manifest()
@@ -27,6 +55,13 @@ return function()
           if x >= 0 or y >= 0 or z >= 0 then
             local mapblock = { x=x, y=y, z=z }
             print("[modgen mapgen]", dump(mapblock))
+
+            local data = read_mapblock_data(mapblock)
+            if data then
+              -- deserialize
+              deserialize(data, mapblock)
+            end
+
           end
         end
       end
