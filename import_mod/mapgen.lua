@@ -2,6 +2,7 @@ local modname = minetest.get_current_modname()
 local MP = minetest.get_modpath(modname)
 
 local deserialize = dofile(MP .. "/deserialize.lua")
+local read_manifest = dofile(MP .. "/read_manifest.lua")
 
 local function get_mapblock_pos(pos)
   return {
@@ -12,6 +13,9 @@ local function get_mapblock_pos(pos)
 end
 
 return function()
+
+  local manifest = read_manifest()
+  print(dump(manifest))
 
   minetest.register_on_generated(function(minp, maxp)
     local min_mapblock = get_mapblock_pos(minp)

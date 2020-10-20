@@ -98,6 +98,7 @@ function modgen.write_mod_files(path)
 	local files = {
 		"config.lua",
 		"deserialize.lua",
+		"read_manifest.lua",
 		"init.lua",
 		"mapgen.lua",
 		"spawn.lua"
