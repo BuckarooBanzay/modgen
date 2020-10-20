@@ -1,7 +1,7 @@
-local MP = minetest.get_modpath("block2mod")
+local MP = minetest.get_modpath("modgen")
 
 -- mod namespace
-block2mod = {
+modgen = {
   pos1 = {},
   pos2 = {},
   PART_LENGTH = 16,

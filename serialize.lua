@@ -6,13 +6,13 @@ minetest.register_on_mods_loaded(function()
       table.insert(node_names_with_timer, node.name)
     end
   end
-  minetest.log("action", "[block2mod] collected " .. #node_names_with_timer .. " items with node timers")
+  minetest.log("action", "[modgen] collected " .. #node_names_with_timer .. " items with node timers")
 end)
 
 local air_content_id = minetest.get_content_id("air")
 local ignore_content_id = minetest.get_content_id("ignore")
 
-function block2mod.serialize_part(pos1, pos2, node_count)
+function modgen.serialize_part(pos1, pos2, node_count)
   local manip = minetest.get_voxel_manip()
   local e1, e2 = manip:read_from_map(pos1, pos2)
   local area = VoxelArea:new({MinEdge=e1, MaxEdge=e2})

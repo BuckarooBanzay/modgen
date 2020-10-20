@@ -1,5 +1,5 @@
 globals = {
-	"block2mod",
+	"modgen",
 	"worldedit"
 }
 

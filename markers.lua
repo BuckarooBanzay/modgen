@@ -3,7 +3,7 @@
 local pos1_player_map = {}
 local pos2_player_map = {}
 
-function block2mod.get_pos(index, playername)
+function modgen.get_pos(index, playername)
   if minetest.get_modpath("worldedit") then
     -- use WE's positions
     if index == 1 then
@@ -15,13 +15,13 @@ function block2mod.get_pos(index, playername)
 
   -- use local positions
   if index == 1 then
-    return block2mod.pos1[playername]
+    return modgen.pos1[playername]
   else
-    return block2mod.pos2[playername]
+    return modgen.pos2[playername]
   end
 end
 
-function block2mod.set_pos(index, playername, pos)
+function modgen.set_pos(index, playername, pos)
   if minetest.get_modpath("worldedit") then
     -- worldedit available, use its markers
     if index == 1 then
@@ -37,10 +37,10 @@ function block2mod.set_pos(index, playername, pos)
 
   local player = minetest.get_player_by_name(playername)
   if player then
-    local map = block2mod.pos1
+    local map = modgen.pos1
     local hud_map = pos1_player_map
     if index == 2 then
-      map = block2mod.pos2
+      map = modgen.pos2
       hud_map = pos2_player_map
     end
 

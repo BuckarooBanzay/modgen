@@ -16,7 +16,7 @@ minetest.register_on_generated(function(minp, maxp)
       for z = min_mapblock.z, max_mapblock.z do
         if x >= 0 or y >= 0 or z >= 0 then
           local mapblock = { x=x, y=y, z=z }
-          print("[block2mod mapgen]", dump(mapblock))
+          print("[modgen mapgen]", dump(mapblock))
         end
       end
     end

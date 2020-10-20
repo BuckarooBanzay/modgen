@@ -1,6 +1,6 @@
 
-function block2mod.iterator_next(pos1, pos2, pos)
-	local part_length = block2mod.PART_LENGTH
+function modgen.iterator_next(pos1, pos2, pos)
+	local part_length = modgen.PART_LENGTH
 
 	if not pos then
 		pos = {x = pos1.x, y = pos1.y, z = pos1.z}

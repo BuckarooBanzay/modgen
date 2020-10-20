@@ -1,5 +1,5 @@
 
-function block2mod.sort_pos(pos1, pos2)
+function modgen.sort_pos(pos1, pos2)
 	pos1 = {x=pos1.x, y=pos1.y, z=pos1.z}
 	pos2 = {x=pos2.x, y=pos2.y, z=pos2.z}
 	if pos1.x > pos2.x then
@@ -15,21 +15,21 @@ function block2mod.sort_pos(pos1, pos2)
 end
 
 
-function block2mod.int_to_bytes(i)
+function modgen.int_to_bytes(i)
 	local x =i + 32768
 	local h = math.floor(x/256) % 256;
 	local l = math.floor(x % 256);
 	return(string.char(h, l));
 end
 
-function block2mod.write_mapblock(filename, node_ids, param1, param2)
+function modgen.write_mapblock(filename, node_ids, param1, param2)
   local file = io.open(filename,"wb")
   local data = ""
 	assert(#node_ids == #param1)
 	assert(#node_ids == #param2)
 
   for i=1,#node_ids do
-    data = data .. block2mod.int_to_bytes(node_ids[i])
+    data = data .. modgen.int_to_bytes(node_ids[i])
   end
   for i=1,#param1 do
     data = data .. string.char(param1[i])
@@ -47,7 +47,7 @@ function block2mod.write_mapblock(filename, node_ids, param1, param2)
   end
 end
 
-function block2mod.write_metadata(filename, metadata)
+function modgen.write_metadata(filename, metadata)
 	local file = io.open(filename,"wb")
 	local json = minetest.write_json(metadata)
 
@@ -55,7 +55,7 @@ function block2mod.write_metadata(filename, metadata)
 	file:close()
 end
 
-function block2mod.write_manifest(filename, ctx)
+function modgen.write_manifest(filename, ctx)
 	local file = io.open(filename,"w")
 	local json = minetest.write_json({
 		pos1 = ctx.pos1,
@@ -68,7 +68,7 @@ function block2mod.write_manifest(filename, ctx)
 	file:close()
 end
 
-function block2mod.get_mapblock_name(pos, suffix)
+function modgen.get_mapblock_name(pos, suffix)
 	return minetest.get_worldpath() .. "/mapexport/mapblock-" ..
 		pos.x .. "_" .. pos.y .. "_" .. pos.z .. "." .. suffix
 end
