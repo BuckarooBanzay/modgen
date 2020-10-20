@@ -9,17 +9,24 @@ minetest.register_chatcommand("export", {
       return false, "you need to set /pos1 and /pos2 first!"
     end
 
+		-- sort by lower position first
+		pos1, pos2 = modgen.sort_pos(pos1, pos2)
+
+		-- get player position for spawn-point
+		local player = minetest.get_player_by_name(name)
+		local spawn_pos = vector.floor(player:get_pos())
+
 		local total_parts =
 			math.ceil(math.abs(pos1.x - pos2.x) / modgen.PART_LENGTH) *
 			math.ceil(math.abs(pos1.y - pos2.y) / modgen.PART_LENGTH) *
 			math.ceil(math.abs(pos1.z - pos2.z) / modgen.PART_LENGTH)
 
-			pos1, pos2 = modgen.sort_pos(pos1, pos2)
 
     local ctx = {
 			current_pos = { x=pos1.x, y=pos1.y, z=pos1.z },
 			pos1 = pos1,
 			pos2 = pos2,
+			spawn_pos = spawn_pos,
 			total_parts = total_parts,
 			node_mapping = {},
 			schemapath = modgen.export_path,

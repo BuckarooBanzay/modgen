@@ -60,6 +60,7 @@ function modgen.write_manifest(filename, ctx)
 	local json = minetest.write_json({
 		pos1 = ctx.pos1,
 		pos2 = ctx.pos1,
+		spawn_pos = ctx.spawn_pos,
 		total_parts = ctx.total_parts,
 		node_mapping = ctx.node_mapping
 	})
