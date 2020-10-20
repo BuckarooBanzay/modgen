@@ -69,7 +69,41 @@ function modgen.write_manifest(filename, ctx)
 	file:close()
 end
 
-function modgen.get_mapblock_name(pos, suffix)
-	return minetest.get_worldpath() .. "/mapexport/mapblock-" ..
+function modgen.get_mapblock_name(prefix, pos, suffix)
+	return prefix .. "mapblock-" ..
 		pos.x .. "_" .. pos.y .. "_" .. pos.z .. "." .. suffix
+end
+
+function modgen.copyfile(src, target)
+	local infile = io.open(src, "r")
+	local instr = infile:read("*a")
+	infile:close()
+
+	if not instr then
+		return
+	end
+
+	local outfile, err = io.open(target, "w")
+	if not outfile then
+		error("File " .. target .. " could not be opened for writing! " .. err or "")
+	end
+	outfile:write(instr)
+	outfile:close()
+
+	return #instr
+end
+
+
+function modgen.write_mod_files(path)
+	local files = {
+		"config.lua",
+		"deserialize.lua",
+		"init.lua",
+		"mapgen.lua",
+		"spawn.lua"
+	}
+
+	for _, filename in ipairs(files) do
+		modgen.copyfile(modgen.MOD_PATH .. "/import_mod/" .. filename, path .. "/" .. filename)
+	end
 end

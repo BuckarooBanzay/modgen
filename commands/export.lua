@@ -35,6 +35,7 @@ minetest.register_chatcommand("export", {
 		}
 
 		minetest.mkdir(ctx.schemapath)
+		minetest.mkdir(ctx.schemapath .. "/map")
 
 		minetest.after(0, modgen.worker, ctx)
 
@@ -51,8 +52,9 @@ function modgen.worker(ctx)
   ctx.progress_percent = math.floor(ctx.current_part / ctx.total_parts * 100 * 10) / 10
 
 	if not ctx.current_pos then
-		-- done
+		-- done, write manifest, config and lua code files
 		modgen.write_manifest(ctx.schemapath .. "/manifest.json", ctx)
+		modgen.write_mod_files(ctx.schemapath)
 		minetest.chat_send_player(ctx.playername, "[modgen] Export done")
 		return
 	end
@@ -85,14 +87,14 @@ function modgen.worker(ctx)
 	else
 		-- write mapblock to disk
 		modgen.write_mapblock(
-			modgen.get_mapblock_name(relative_pos, "bin"),
+			modgen.get_mapblock_name(ctx.schemapath .. "/map/", relative_pos, "bin"),
 			data.node_ids, data.param1, data.param2
 		)
 
 		-- write metadata if available
 		if data.has_metadata then
 			modgen.write_metadata(
-				modgen.get_mapblock_name(relative_pos, "meta.bin"),
+				modgen.get_mapblock_name(ctx.schemapath .. "/map/", relative_pos, "meta.bin"),
 				data.metadata
 			)
 		end
