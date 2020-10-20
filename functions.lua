@@ -25,6 +25,8 @@ end
 function modgen.write_mapblock(filename, node_ids, param1, param2)
   local file = io.open(filename,"wb")
   local data = ""
+	print(#node_ids)
+	assert(#node_ids == 4096) -- entire mapblock
 	assert(#node_ids == #param1)
 	assert(#node_ids == #param2)
 
@@ -58,8 +60,7 @@ end
 function modgen.write_manifest(filename, ctx)
 	local file = io.open(filename,"w")
 	local json = minetest.write_json({
-		pos1 = ctx.pos1,
-		pos2 = ctx.pos1,
+		size_mapblocks = ctx.size_mapblocks,
 		spawn_pos = ctx.spawn_pos,
 		total_parts = ctx.total_parts,
 		node_mapping = ctx.node_mapping

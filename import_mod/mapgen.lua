@@ -26,15 +26,32 @@ local function read_compressed(filename)
 end
 
 local function read_mapblock_data(mapblock)
-  local nodedata = read_compressed(get_mapblock_name(MP .. "/map/", mapblock, "bin"))
-  local metadata = read_compressed(get_mapblock_name(MP .. "/map/", mapblock, "meta.bin"))
+  local coord = vector.multiply(mapblock, 16)
+  local nodedata = read_compressed(get_mapblock_name(MP .. "/map/", coord, "bin"))
+  local metadata = read_compressed(get_mapblock_name(MP .. "/map/", coord, "meta.bin"))
 
   if nodedata then
+
     local result = {
-      -- TODO
+      node_ids = {},
+      param1 = {},
+      param2 = {},
+      metadata = minetest.parse_json(metadata or "{}")
     }
 
-    -- TODO: metadata
+    for i=1,4096 do
+      -- 1, 3, 5 ... 8191
+      local node_id_offset = (i * 2) - 1
+      local node_id = (string.byte(nodedata, node_id_offset) * 256) +
+        string.byte(nodedata, node_id_offset+1) - 32768
+
+      local param1 = string.byte(nodedata, (4096 * 2) + i)
+      local param2 = string.byte(nodedata, (4096 * 3) + i)
+
+      table.insert(result.node_ids, node_id)
+      table.insert(result.param1, param1)
+      table.insert(result.param2, param2)
+    end
 
     return result
   end
@@ -52,13 +69,13 @@ return function()
     for x = min_mapblock.x, max_mapblock.x do
       for y = min_mapblock.y, max_mapblock.y do
         for z = min_mapblock.z, max_mapblock.z do
-          if x >= 0 or y >= 0 or z >= 0 then
+          if x >= 0 and y >= 0 and z >= 0 then
             local mapblock = { x=x, y=y, z=z }
-            print("[modgen mapgen]", dump(mapblock))
 
             local data = read_mapblock_data(mapblock)
             if data then
               -- deserialize
+              print("[modgen mapgen]", dump(mapblock))
               deserialize(data, mapblock)
             end
 
