@@ -35,18 +35,19 @@ function modgen.set_pos(index, playername, pos)
     return
   end
 
+  local map = modgen.pos1
+  local hud_map = pos1_player_map
+  if index == 2 then
+    map = modgen.pos2
+    hud_map = pos2_player_map
+  end
+  map[playername] = pos
+
   local player = minetest.get_player_by_name(playername)
   if player then
-    local map = modgen.pos1
-    local hud_map = pos1_player_map
-    if index == 2 then
-      map = modgen.pos2
-      hud_map = pos2_player_map
-    end
-
+    -- set up hud elements
     local pos_str = minetest.pos_to_string(pos)
     minetest.chat_send_player(playername, "Position " .. index .. " set to " .. pos_str)
-    map[playername] = pos
 
     if hud_map[playername] then
       player:hud_remove(hud_map[playername])
