@@ -84,7 +84,7 @@ function modgen.worker(ctx)
 
 	if only_air then
 		-- nothing to see here
-		minetest.after(0.2, modgen.worker, ctx)
+		minetest.after(0.1, modgen.worker, ctx)
 
 	else
 		-- write mapblock to disk
@@ -101,7 +101,7 @@ function modgen.worker(ctx)
 			)
 		end
 
-		minetest.after(0.5, modgen.worker, ctx)
+		minetest.after(0.1, modgen.worker, ctx)
 	end
 
 end
