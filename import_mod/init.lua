@@ -11,7 +11,7 @@ local read_manifest = dofile(MP .. "/read_manifest.lua")
 local manifest = read_manifest()
 
 -- initialize mapgen
-mapgen()
+mapgen(manifest)
 
 if config.enable_spawnpoint then
   -- initialize player spawn point

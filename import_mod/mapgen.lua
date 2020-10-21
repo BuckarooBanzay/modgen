@@ -2,6 +2,7 @@ local modname = minetest.get_current_modname()
 local MP = minetest.get_modpath(modname)
 
 local deserialize = dofile(MP .. "/deserialize.lua")
+local localize_nodeids = dofile(MP .. "/localize_nodeids.lua")
 
 local function get_mapblock_pos(pos)
   return {
@@ -56,7 +57,7 @@ local function read_mapblock_data(mapblock)
   end
 end
 
-return function()
+return function(manifest)
   minetest.register_on_generated(function(minp, maxp)
     local min_mapblock = get_mapblock_pos(minp)
     local max_mapblock = get_mapblock_pos(maxp)
@@ -69,6 +70,9 @@ return function()
 
             local data = read_mapblock_data(mapblock)
             if data then
+              -- localize node-ids
+              localize_nodeids(manifest.node_mapping, data.node_ids)
+
               -- deserialize
               deserialize(data, mapblock)
             end

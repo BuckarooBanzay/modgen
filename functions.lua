@@ -113,7 +113,9 @@ function modgen.write_mod_files(path)
 		"read_manifest.lua",
 		"init.lua",
 		"mapgen.lua",
-		"spawn.lua"
+		"spawn.lua",
+		"localize_nodeids.lua",
+		"mod.conf"
 	}
 
 	for _, filename in ipairs(files) do
