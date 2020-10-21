@@ -14,6 +14,17 @@ function modgen.sort_pos(pos1, pos2)
 	return pos1, pos2
 end
 
+function modgen.get_mapblock_bounds(pos)
+	local mapblock = vector.floor( vector.divide(pos, 16))
+	return modgen.get_mapblock_bounds_from_mapblock(mapblock)
+end
+
+
+function modgen.get_mapblock_bounds_from_mapblock(mapblock)
+	local min = vector.multiply(mapblock, 16)
+  local max = vector.add(min, 15)
+	return min, max
+end
 
 function modgen.int_to_bytes(i)
 	local x =i + 32768
