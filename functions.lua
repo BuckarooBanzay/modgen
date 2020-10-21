@@ -36,7 +36,7 @@ end
 function modgen.write_mapblock(filename, node_ids, param1, param2)
   local file = io.open(filename,"wb")
   local data = ""
-	print(#node_ids)
+
 	assert(#node_ids == 4096) -- entire mapblock
 	assert(#node_ids == #param1)
 	assert(#node_ids == #param2)
