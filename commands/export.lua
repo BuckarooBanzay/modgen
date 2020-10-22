@@ -18,7 +18,7 @@ minetest.register_chatcommand("export", {
 
 		-- get player position for spawn-point
 		local player = minetest.get_player_by_name(name)
-		local spawn_pos = vector.floor(vector.subtract(player:get_pos(), min))
+		local spawn_pos = vector.floor(player:get_pos())
 
 		local size_mapblocks = {
 			x = math.ceil(math.abs(min.x - max.x) / modgen.PART_LENGTH),
