@@ -14,8 +14,12 @@ function modgen.sort_pos(pos1, pos2)
 	return pos1, pos2
 end
 
+function modgen.get_mapblock(pos)
+	return vector.floor( vector.divide(pos, 16))
+end
+
 function modgen.get_mapblock_bounds(pos)
-	local mapblock = vector.floor( vector.divide(pos, 16))
+	local mapblock = modgen.get_mapblock(pos)
 	return modgen.get_mapblock_bounds_from_mapblock(mapblock)
 end
 
@@ -72,6 +76,8 @@ function modgen.write_manifest(filename, ctx)
 	local file = io.open(filename,"w")
 	local json = minetest.write_json({
 		size_mapblocks = ctx.size_mapblocks,
+		pos1 = ctx.pos1,
+		pos2 = ctx.pos2,
 		spawn_pos = ctx.spawn_pos,
 		total_parts = ctx.total_parts,
 		node_mapping = ctx.node_mapping

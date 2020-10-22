@@ -77,7 +77,7 @@ function modgen.worker(ctx)
 	minetest.chat_send_player(ctx.playername, "[modgen] Export pos: " .. minetest.pos_to_string(ctx.current_pos) ..
     " Progress: " .. ctx.progress_percent .. "% (" .. ctx.current_part .. "/" .. ctx.total_parts .. ")")
 
-	local relative_pos = vector.subtract(ctx.current_pos, ctx.pos1)
+	local mapblock = modgen.get_mapblock(ctx.current_pos)
   local data = modgen.serialize_part(ctx.current_pos)
 
 	-- populate node_mapping and check if the mapblock contains only air
@@ -97,14 +97,14 @@ function modgen.worker(ctx)
 	else
 		-- write mapblock to disk
 		modgen.write_mapblock(
-			modgen.get_mapblock_name(ctx.schemapath .. "/map/", relative_pos, "bin"),
+			modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "bin"),
 			data.node_ids, data.param1, data.param2
 		)
 
 		-- write metadata if available
 		if data.has_metadata then
 			modgen.write_metadata(
-				modgen.get_mapblock_name(ctx.schemapath .. "/map/", relative_pos, "meta.bin"),
+				modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "meta.bin"),
 				data.metadata
 			)
 		end
