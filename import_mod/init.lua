@@ -20,5 +20,5 @@ end
 
 if minetest.get_modpath("modgen") then
   -- modgen available, make it aware of the loaded import_mod
-  modgen.register_import_mod(manifest)
+  modgen.register_import_mod(manifest, MP)
 end

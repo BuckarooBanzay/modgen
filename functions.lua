@@ -1,4 +1,8 @@
 
+-- copy environment to local scope
+-- reference to insecure environment is removed from "modgen" global after mod load
+local env = modgen.env
+
 function modgen.sort_pos(pos1, pos2)
 	pos1 = {x=pos1.x, y=pos1.y, z=pos1.z}
 	pos2 = {x=pos2.x, y=pos2.y, z=pos2.z}
@@ -38,7 +42,7 @@ function modgen.int_to_bytes(i)
 end
 
 function modgen.write_mapblock(filename, node_ids, param1, param2)
-  local file = io.open(filename,"wb")
+  local file = env.io.open(filename,"wb")
   local data = ""
 
 	assert(#node_ids == 4096) -- entire mapblock
@@ -65,7 +69,7 @@ function modgen.write_mapblock(filename, node_ids, param1, param2)
 end
 
 function modgen.write_metadata(filename, metadata)
-	local file = io.open(filename,"wb")
+	local file = env.io.open(filename,"wb")
 	local json = minetest.write_json(metadata)
 
 	file:write(minetest.compress(json, "deflate"))
@@ -73,15 +77,15 @@ function modgen.write_metadata(filename, metadata)
 end
 
 function modgen.write_manifest(filename, ctx)
-	local file = io.open(filename,"w")
-	local json = minetest.write_json({
-		size_mapblocks = ctx.size_mapblocks,
-		pos1 = ctx.pos1,
-		pos2 = ctx.pos2,
-		spawn_pos = ctx.spawn_pos,
-		total_parts = ctx.total_parts,
-		node_mapping = ctx.node_mapping
-	})
+	local manifest = modgen.import_manifest or {}
+
+	-- merge previous config if available
+	manifest.spawn_pos = manifest.spawn_pos or ctx.spawn_pos
+	manifest.node_mapping = modgen.node_mapping
+	manifest.next_id = modgen.next_id
+
+	local file = env.io.open(filename,"w")
+	local json = minetest.write_json(manifest)
 
 	file:write(json)
 	file:close()
@@ -93,7 +97,7 @@ function modgen.get_mapblock_name(prefix, pos, suffix)
 end
 
 function modgen.copyfile(src, target)
-	local infile = io.open(src, "r")
+	local infile = env.io.open(src, "r")
 	local instr = infile:read("*a")
 	infile:close()
 
@@ -101,7 +105,7 @@ function modgen.copyfile(src, target)
 		return
 	end
 
-	local outfile, err = io.open(target, "w")
+	local outfile, err = env.io.open(target, "w")
 	if not outfile then
 		error("File " .. target .. " could not be opened for writing! " .. err or "")
 	end

@@ -1,12 +1,20 @@
 
 -- used as callback from already exported mods
-function modgen.register_import_mod(manifest)
+function modgen.register_import_mod(manifest, modpath)
 
-  -- set current map export limits to modgen.pos1/pos2
-  -- this allows re-exporting a map 1:1 with just the /export command
-  minetest.after(0, function()
-    modgen.set_pos(1, "singleplayer", manifest.pos1)
-    modgen.set_pos(2, "singleplayer", manifest.pos2)
-  end)
+  if modgen.enable_inplace_save then
+    -- set export target to import-mod directly if the files are accessible
+    modgen.export_path = modpath
+
+    -- set this as active manifest
+    modgen.import_manifest = manifest
+
+    -- use next id value
+    modgen.next_id = manifest.next_id
+
+    -- use existing node_mapping
+    modgen.node_mapping = manifest.node_mapping
+  end
+
 
 end

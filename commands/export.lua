@@ -42,15 +42,17 @@ minetest.register_chatcommand("export", {
 			spawn_pos = spawn_pos,
 			size_mapblocks = size_mapblocks,
 			total_parts = total_parts,
-			node_mapping = {},
 			schemapath = modgen.export_path,
 			playername = name,
 			current_part = 0,
 			delay = delay
 		}
 
-		minetest.mkdir(ctx.schemapath)
-		minetest.mkdir(ctx.schemapath .. "/map")
+		if not modgen.enable_inplace_save or not modgen.import_manifest then
+			-- create directories if not saving in-place
+			minetest.mkdir(ctx.schemapath)
+			minetest.mkdir(ctx.schemapath .. "/map")
+		end
 
 		minetest.after(0, modgen.worker, ctx)
 
@@ -80,17 +82,7 @@ function modgen.worker(ctx)
 	local mapblock = modgen.get_mapblock(ctx.current_pos)
   local data = modgen.serialize_part(ctx.current_pos)
 
-	-- populate node_mapping and check if the mapblock contains only air
-	local only_air = true
-	for name, id in pairs(data.node_mapping) do
-		ctx.node_mapping[name] = id
-		if name ~= "air" then
-			-- mapblock is not empty
-			only_air = false
-		end
-	end
-
-	if only_air then
+	if data.only_air then
 		-- nothing to see here
 		minetest.after(ctx.delay, modgen.worker, ctx)
 

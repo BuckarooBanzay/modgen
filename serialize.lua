@@ -12,6 +12,9 @@ end)
 local air_content_id = minetest.get_content_id("air")
 local ignore_content_id = minetest.get_content_id("ignore")
 
+-- mapping from local node-id to export-node-id
+local external_node_id_mapping = {}
+
 function modgen.serialize_part(pos)
   local pos1, pos2 = modgen.get_mapblock_bounds(pos)
 
@@ -38,9 +41,9 @@ function modgen.serialize_part(pos)
     node_ids = {},
     param1 = {},
     param2 = {},
-    node_mapping = {}, -- name -> id
     metadata = {},
-    has_metadata = false
+    has_metadata = false,
+    only_air = true
   }
 
   -- loop over all blocks and fill cid,param1 and param2
@@ -55,6 +58,31 @@ function modgen.serialize_part(pos)
       node_id = air_content_id
     end
 
+    if node_id ~= air_content_id then
+      data.only_air = false
+    end
+
+    if not external_node_id_mapping[node_id] then
+      -- lookup node_id
+      local nodename = minetest.get_name_from_content_id(node_id)
+
+      if not modgen.node_mapping[nodename] then
+        -- mapping does not exist yet, create it
+        modgen.node_mapping[nodename] = modgen.next_id
+        external_node_id_mapping[node_id] = modgen.next_id
+
+        -- increment next external id
+        modgen.next_id = modgen.next_id + 1
+      else
+        -- mapping exists, look it up
+        local external_id = modgen.node_mapping[nodename]
+        external_node_id_mapping[node_id] = external_id
+      end
+    end
+
+    -- map node_id
+    node_id = external_node_id_mapping[node_id]
+
     table.insert(data.node_ids, node_id)
     table.insert(data.param1, param1[i])
     table.insert(data.param2, param2[i])
@@ -63,12 +91,6 @@ function modgen.serialize_part(pos)
     node_id_count[node_id] = count + 1
   end
   end
-  end
-
-  -- gather node id mapping
-  for node_id in pairs(node_id_count) do
-    local node_name = minetest.get_name_from_content_id(node_id)
-    data.node_mapping[node_name] = node_id
   end
 
   -- serialize metadata
