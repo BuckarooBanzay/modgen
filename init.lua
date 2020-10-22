@@ -11,6 +11,7 @@ modgen = {
 
 dofile(MP.."/functions.lua")
 dofile(MP.."/markers.lua")
+dofile(MP.."/register.lua")
 dofile(MP.."/serialize.lua")
 dofile(MP.."/iterator_next.lua")
 dofile(MP.."/commands/export.lua")
