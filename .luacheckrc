@@ -1,5 +1,6 @@
 globals = {
-	"modgen"
+	"modgen",
+	"worldedit"
 }
 
 read_globals = {
