@@ -39,4 +39,13 @@ return function(data, mapblock_pos)
     end
   end
 
+  -- deserialize node timers
+  if data.metadata and data.metadata.timers then
+    for pos_str, timer_data in pairs(data.metadata.timers) do
+      local relative_pos = minetest.string_to_pos(pos_str)
+      local absolute_pos = vector.add(pos1, relative_pos)
+      minetest.get_node_timer(absolute_pos):set(timer_data.timeout, timer_data.elapsed)
+    end
+  end
+
 end
