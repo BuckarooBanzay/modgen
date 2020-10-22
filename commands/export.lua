@@ -1,6 +1,6 @@
 
 minetest.register_chatcommand("export", {
-	func = function(name)
+	func = function(name, params)
 
     local pos1 = modgen.get_pos(1, name)
     local pos2 = modgen.get_pos(2, name)
@@ -28,6 +28,13 @@ minetest.register_chatcommand("export", {
 
 		local total_parts = size_mapblocks.x * size_mapblocks.y * size_mapblocks.z
 
+		local delay = 0.1
+
+		if params == "fast" then
+			-- fast mode, no delay
+			delay = 0
+		end
+
     local ctx = {
 			current_pos = nil,
 			pos1 = min,
@@ -38,7 +45,8 @@ minetest.register_chatcommand("export", {
 			node_mapping = {},
 			schemapath = modgen.export_path,
 			playername = name,
-			current_part = 0
+			current_part = 0,
+			delay = delay
 		}
 
 		minetest.mkdir(ctx.schemapath)
@@ -84,7 +92,7 @@ function modgen.worker(ctx)
 
 	if only_air then
 		-- nothing to see here
-		minetest.after(0.1, modgen.worker, ctx)
+		minetest.after(ctx.delay, modgen.worker, ctx)
 
 	else
 		-- write mapblock to disk
@@ -101,7 +109,7 @@ function modgen.worker(ctx)
 			)
 		end
 
-		minetest.after(0.1, modgen.worker, ctx)
+		minetest.after(ctx.delay, modgen.worker, ctx)
 	end
 
 end

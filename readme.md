@@ -12,8 +12,8 @@ State: **WIP**
 
 # Commands
 
-* `/pos1` / `/pos2` Set opposite corners of the export map
-* `/export` Exports the map as a standalone mod into `${worldfolder}/modgen_mod_export`
+* `/pos1`, `/pos2` Set opposite corners of the export map
+* `/export [fast]` Exports the map as a standalone mod into `${worldfolder}/modgen_mod_export`
 
 # License
 
