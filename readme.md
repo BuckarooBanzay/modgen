@@ -26,6 +26,44 @@ secure.trusted_mods = modgen
 
 Afterwards if you mark a region and execute `/export` the mapblocks are written to the exported mod itself
 
+# Export format
+
+## manifest.json
+
+Json file that serves as an index to look up content-id's and spawn-position:
+
+```json
+{
+  "next_id": 82,
+  "node_mapping": {
+    "access_cards:palm_scanner_off": 25,
+    "air": 0,
+    "default:chest": 53,
+    "digilines:wire_std_00100000": 72
+  },
+  "spawn_pos": {
+    "x": 7,
+    "y": 8,
+    "z": 22
+  }
+}
+```
+
+## mapblocks
+
+Mapblocks are saved in `${modfolder}/map/mapblock-x_y_z.bin`
+**Hint**: x/y/z are the coordinates in mapblocks
+
+The mapdata is saved and compressed with `compress`
+
+* 4096*2 Bytes: Node-ids for the mapblock in z/y/x order as integer MSB first
+* 4096 Bytes: Param1 data
+* 4096 Bytes: Param2 data
+
+## metadata
+
+Metadata is saved as compressed file in `${modfolder}/map/mapblock-x_y_z.meta.bin`
+
 # License
 
 MIT
