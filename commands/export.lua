@@ -82,14 +82,17 @@ function modgen.worker(ctx)
 	local mapblock = modgen.get_mapblock(ctx.current_pos)
   local data = modgen.serialize_part(ctx.current_pos)
 
+	local mapblock_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "bin")
+
 	if data.only_air then
-		-- nothing to see here
+		-- remove mapblock if it exists
+		modgen.delete_mapblock(mapblock_filename)
 		minetest.after(ctx.delay, modgen.worker, ctx)
 
 	else
 		-- write mapblock to disk
 		modgen.write_mapblock(
-			modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "bin"),
+			mapblock_filename,
 			data.node_ids, data.param1, data.param2
 		)
 

@@ -41,6 +41,12 @@ function modgen.int_to_bytes(i)
 	return(string.char(h, l));
 end
 
+function modgen.delete_mapblock(filename)
+	if env.os.remove then
+		env.os.remove(filename)
+	end
+end
+
 function modgen.write_mapblock(filename, node_ids, param1, param2)
   local file = env.io.open(filename,"wb")
   local data = ""
