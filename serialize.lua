@@ -112,6 +112,14 @@ function modgen.serialize_part(pos)
 
     data.metadata.meta = data.metadata.meta or {}
     data.metadata.meta[minetest.pos_to_string(relative_pos)] = meta
+
+    if not data.has_metadata then
+      -- check if metadata available
+      for _ in pairs(data.metadata.meta) do
+        -- metadata found
+        data.has_metadata = true
+      end
+    end
   end
 
   -- serialize node timers
