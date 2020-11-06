@@ -98,7 +98,6 @@ function modgen.serialize_part(pos)
   for _, meta_pos in ipairs(pos_with_meta) do
     local relative_pos = vector.subtract(meta_pos, pos1)
     local meta = minetest.get_meta(meta_pos):to_table()
-    data.has_metadata = true
 
     -- Convert metadata item stacks to item strings
     for _, invlist in pairs(meta.inventory) do
@@ -106,8 +105,14 @@ function modgen.serialize_part(pos)
         local itemstack = invlist[index]
         if itemstack.to_string then
           invlist[index] = itemstack:to_string()
+          data.has_metadata = true
         end
       end
+    end
+
+    -- dirty workaround for https://github.com/minetest/minetest/issues/8943
+    if next(meta) then
+      data.has_metadata = true
     end
 
     data.metadata.meta = data.metadata.meta or {}
