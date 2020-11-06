@@ -83,10 +83,12 @@ function modgen.worker(ctx)
   local data = modgen.serialize_part(ctx.current_pos)
 
 	local mapblock_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "bin")
+	local mapblock_meta_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "meta.bin")
 
 	if data.only_air then
 		-- remove mapblock if it exists
 		modgen.delete_mapblock(mapblock_filename)
+		modgen.delete_mapblock(mapblock_meta_filename)
 		minetest.after(ctx.delay, modgen.worker, ctx)
 
 	else
@@ -99,9 +101,12 @@ function modgen.worker(ctx)
 		-- write metadata if available
 		if data.has_metadata then
 			modgen.write_metadata(
-				modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "meta.bin"),
+				mapblock_meta_filename,
 				data.metadata
 			)
+		else
+			-- remove metadata if it exists
+			modgen.delete_mapblock(mapblock_meta_filename)
 		end
 
 		minetest.after(ctx.delay, modgen.worker, ctx)

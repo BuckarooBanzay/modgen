@@ -98,13 +98,13 @@ function modgen.serialize_part(pos)
   for _, meta_pos in ipairs(pos_with_meta) do
     local relative_pos = vector.subtract(meta_pos, pos1)
     local meta = minetest.get_meta(meta_pos):to_table()
+    data.has_metadata = true
 
     -- Convert metadata item stacks to item strings
     for _, invlist in pairs(meta.inventory) do
       for index = 1, #invlist do
         local itemstack = invlist[index]
         if itemstack.to_string then
-          data.has_metadata = true
           invlist[index] = itemstack:to_string()
         end
       end
@@ -112,14 +112,6 @@ function modgen.serialize_part(pos)
 
     data.metadata.meta = data.metadata.meta or {}
     data.metadata.meta[minetest.pos_to_string(relative_pos)] = meta
-
-    if not data.has_metadata then
-      -- check if metadata available
-      for _ in pairs(data.metadata.meta) do
-        -- metadata found
-        data.has_metadata = true
-      end
-    end
   end
 
   -- serialize node timers
