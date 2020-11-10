@@ -47,7 +47,7 @@ function modgen.get_mapblock_name(prefix, pos, suffix)
 	local pos_str = minetest.pos_to_string(pos)
   -- simply do a "sha1" over the position string
   -- reconstruction of the coordinate can only be achieved by hash-collision (brute-force)
-	local sha_hash = minetest.sha1(pos_str)
+  local sha_hash = minetest.sha1(pos_str)
 	return prefix .. "mapblock-" .. sha_hash .. "." .. suffix
 end
 ```
