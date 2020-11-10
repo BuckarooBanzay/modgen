@@ -12,6 +12,7 @@ Allows you to export a part of the map as a standalone mod which can be used as 
 
 * `/pos1`, `/pos2` Set opposite corners of the export map
 * `/export [fast]` Exports the map as a standalone mod into `${worldfolder}/modgen_mod_export`
+* `/autosave [on|off]` enables autosave feature (**warning**: may impact performance!)
 
 # In-place saving
 

@@ -41,7 +41,9 @@ dofile(MP.."/markers.lua")
 dofile(MP.."/register.lua")
 dofile(MP.."/serialize.lua")
 dofile(MP.."/iterator_next.lua")
+dofile(MP.."/export.lua")
 dofile(MP.."/commands/export.lua")
+dofile(MP.."/commands/autosave.lua")
 dofile(MP.."/commands/pos.lua")
 
 -- remove environment variable from global scope
