@@ -89,6 +89,7 @@ function modgen.write_manifest(filename, ctx)
 	manifest.spawn_pos = manifest.spawn_pos or ctx.spawn_pos
 	manifest.node_mapping = modgen.node_mapping
 	manifest.next_id = modgen.next_id
+	manifest.version = 1
 
 	local file = env.io.open(filename,"w")
 	local json = minetest.write_json(manifest)
