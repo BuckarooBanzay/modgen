@@ -29,7 +29,7 @@ Afterwards if you mark a region and execute `/export` the mapblocks are written 
 
 # Obfuscating mapblock paths/coordinates
 
-In some scenarios it can be important to obfuscate where mapblocks are generated (to make cheating harder example).
+In some scenarios it can be important to obfuscate where mapblocks are generated (to make cheating harder for example).
 The pattern of the mapblock filename can be customized in a depending mod.
 
 An example:
