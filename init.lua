@@ -7,6 +7,9 @@ modgen = {
   MOD_PATH = MP,
   PART_LENGTH = 16,
 
+  -- current export/import version
+  version = 2,
+
   -- nodename to id mapping
   node_mapping = {},
 
