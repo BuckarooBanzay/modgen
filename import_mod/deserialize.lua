@@ -14,8 +14,8 @@ return function(data, mapblock_pos)
 
   local j = 1
   for z=pos1.z,pos2.z do
-  for y=pos1.y,pos2.y do
   for x=pos1.x,pos2.x do
+  for y=pos1.y,pos2.y do
     local i = area:index(x,y,z)
     node_data[i] = data.node_ids[j]
     param1[i] = data.param1[j]
