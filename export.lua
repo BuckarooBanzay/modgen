@@ -4,10 +4,6 @@ function modgen.export(name, pos1, pos2, fast, verbose)
 	local min = modgen.get_mapblock_bounds(pos1)
 	local _, max = modgen.get_mapblock_bounds(pos2)
 
-	-- get player position for spawn-point
-	local player = minetest.get_player_by_name(name)
-	local spawn_pos = vector.floor(player:get_pos())
-
 	local size_mapblocks = {
 		x = math.ceil(math.abs(min.x - max.x) / modgen.PART_LENGTH),
 		y = math.ceil(math.abs(min.y - max.y) / modgen.PART_LENGTH),
@@ -26,7 +22,6 @@ function modgen.export(name, pos1, pos2, fast, verbose)
 		current_pos = nil,
 		pos1 = min,
 		pos2 = max,
-		spawn_pos = spawn_pos,
 		size_mapblocks = size_mapblocks,
 		total_parts = total_parts,
 		schemapath = modgen.export_path,
@@ -55,7 +50,7 @@ function modgen.worker(ctx)
 
 	if not ctx.current_pos then
 		-- done, write manifest, config and lua code files
-		modgen.write_manifest(ctx.schemapath .. "/manifest.json", ctx)
+		modgen.write_manifest(ctx.schemapath .. "/manifest.json")
 		modgen.write_mod_files(ctx.schemapath)
 		if ctx.verbose then
 			minetest.chat_send_player(ctx.playername, "[modgen] Export done")

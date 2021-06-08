@@ -81,14 +81,13 @@ function modgen.write_metadata(filename, metadata)
 	file:close()
 end
 
-function modgen.write_manifest(filename, ctx)
+function modgen.write_manifest(filename)
 	local manifest = modgen.import_manifest or {}
 
 	-- merge previous config if available
-	manifest.spawn_pos = manifest.spawn_pos or ctx.spawn_pos
 	manifest.node_mapping = modgen.node_mapping
 	manifest.next_id = modgen.next_id
-	manifest.version = 1
+	manifest.version = modgen.version
 
 	local file = env.io.open(filename,"w")
 	local json = minetest.write_json(manifest)
@@ -102,8 +101,7 @@ function modgen.get_mapblock_name(prefix, pos, suffix, create_dirs)
 	if create_dirs then
 		minetest.mkdir(xstride_dir)
 	end
-	return xstride_dir .. "/mapblock-" ..
-		pos.y .. "_" .. pos.z .. "." .. suffix
+	return xstride_dir .. "/mapblock_" .. pos.y .. "_" .. pos.z .. "." .. suffix
 end
 
 function modgen.copyfile(src, target)
@@ -128,12 +126,10 @@ end
 
 function modgen.write_mod_files(path)
 	local files = {
-		"config.lua",
 		"deserialize.lua",
 		"read_manifest.lua",
 		"init.lua",
 		"mapgen.lua",
-		"spawn.lua",
 		"localize_nodeids.lua",
 		"mod.conf"
 	}

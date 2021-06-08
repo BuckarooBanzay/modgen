@@ -68,7 +68,7 @@ This may be helpful in maps where treasures are hidden in remote areas only acce
 
 ## manifest.json
 
-Json file that serves as an index to look up content-id's and spawn-position:
+Json file that serves as an index to look up content-id's:
 
 ```json
 {
@@ -78,23 +78,18 @@ Json file that serves as an index to look up content-id's and spawn-position:
     "air": 0,
     "default:chest": 53,
     "digilines:wire_std_00100000": 72
-  },
-  "spawn_pos": {
-    "x": 7,
-    "y": 8,
-    "z": 22
   }
 }
 ```
 
 ## mapblocks
 
-Mapblocks are saved in `${modfolder}/map/mapblock-x_y_z.bin`
+Mapblocks are saved in `${modfolder}/map/{x}/mapblock_{y}_{z}.bin`
 **Hint**: x/y/z are the coordinates in mapblocks
 
 The mapdata is saved and compressed with `deflate`
 
-* 4096*2 Bytes: Node-ids for the mapblock in z/y/x order as integer MSB first
+* 4096*2 Bytes: Node-ids for the mapblock in z/x/y order as integer MSB first
 * 4096 Bytes: Param1 data
 * 4096 Bytes: Param2 data
 
