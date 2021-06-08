@@ -71,8 +71,8 @@ function modgen.worker(ctx)
 	local mapblock = modgen.get_mapblock(ctx.current_pos)
 	local data = modgen.serialize_part(ctx.current_pos)
 
-	local mapblock_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "bin")
-	local mapblock_meta_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "meta.bin")
+	local mapblock_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "bin", true)
+	local mapblock_meta_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "meta.bin", true)
 
 	if data.only_air then
 		-- remove mapblock if it exists

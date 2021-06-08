@@ -43,7 +43,7 @@ depends = modgen
 
 _init.lua_
 ```lua
-function modgen.get_mapblock_name(prefix, pos, suffix)
+function modgen.get_mapblock_name(prefix, pos, suffix, create_dirs)
   local pos_str = minetest.pos_to_string(pos)
   -- simply do a "sha1" over the position string
   -- reconstruction of the coordinate can only be achieved by hash-collision (brute-force)

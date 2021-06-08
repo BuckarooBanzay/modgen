@@ -97,9 +97,13 @@ function modgen.write_manifest(filename, ctx)
 	file:close()
 end
 
-function modgen.get_mapblock_name(prefix, pos, suffix)
-	return prefix .. "mapblock-" ..
-		pos.x .. "_" .. pos.y .. "_" .. pos.z .. "." .. suffix
+function modgen.get_mapblock_name(prefix, pos, suffix, create_dirs)
+	local xstride_dir = prefix .. "/" .. pos.x
+	if create_dirs then
+		minetest.mkdir(xstride_dir)
+	end
+	return xstride_dir .. "/mapblock-" ..
+		pos.y .. "_" .. pos.z .. "." .. suffix
 end
 
 function modgen.copyfile(src, target)
