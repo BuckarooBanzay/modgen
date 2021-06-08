@@ -20,23 +20,25 @@ modgen = {
   import_manifest = nil,
 
   -- enables saving mapblocks in-place
-  enable_inplace_save = false,
-
-  -- secure/insecure environment
-  env = _G
+  enable_inplace_save = false
 }
+
+-- secure/insecure environment
+local global_env = _G
 
 local ie = minetest.request_insecure_environment()
 if ie then
   print("[modgen] using insecure environment")
   -- register insecure environment
-  modgen.env = ie
+  global_env = ie
 
   -- enable in-place saving
   modgen.enable_inplace_save = true
 end
 
-dofile(MP.."/functions.lua")
+-- pass on global env (secure/insecure)
+loadfile(MP.."/functions.lua")(global_env)
+
 dofile(MP.."/markers.lua")
 dofile(MP.."/register.lua")
 dofile(MP.."/serialize.lua")
@@ -46,5 +48,3 @@ dofile(MP.."/commands/export.lua")
 dofile(MP.."/commands/autosave.lua")
 dofile(MP.."/commands/pos.lua")
 
--- remove environment variable from global scope
-modgen.env = nil

@@ -1,7 +1,6 @@
 
 -- copy environment to local scope
--- reference to insecure environment is removed from "modgen" global after mod load
-local env = modgen.env
+local env = ...
 
 function modgen.sort_pos(pos1, pos2)
 	pos1 = {x=pos1.x, y=pos1.y, z=pos1.z}
@@ -30,7 +29,7 @@ end
 
 function modgen.get_mapblock_bounds_from_mapblock(mapblock)
 	local min = vector.multiply(mapblock, 16)
-  local max = vector.add(min, 15)
+	local max = vector.add(min, 15)
 	return min, max
 end
 
@@ -48,30 +47,30 @@ function modgen.delete_mapblock(filename)
 end
 
 function modgen.write_mapblock(filename, node_ids, param1, param2)
-  local file = env.io.open(filename,"wb")
-  local data = ""
+	local file = env.io.open(filename,"wb")
+	local data = ""
 
 	assert(#node_ids == 4096) -- entire mapblock
 	assert(#node_ids == #param1)
 	assert(#node_ids == #param2)
 
-  for i=1,#node_ids do
-    data = data .. modgen.int_to_bytes(node_ids[i])
-  end
-  for i=1,#param1 do
-    data = data .. string.char(param1[i])
-  end
-  for i=1,#param2 do
-    data = data .. string.char(param2[i])
-  end
+	for i=1,#node_ids do
+		data = data .. modgen.int_to_bytes(node_ids[i])
+	end
+	for i=1,#param1 do
+		data = data .. string.char(param1[i])
+	end
+	for i=1,#param2 do
+		data = data .. string.char(param2[i])
+	end
 
-  file:write(minetest.compress(data, "deflate"))
+	file:write(minetest.compress(data, "deflate"))
 
-  if file and file:close() then
-    return
-  else
-    error("write to '" .. filename .. "' failed!")
-  end
+	if file and file:close() then
+		return
+	else
+		error("write to '" .. filename .. "' failed!")
+	end
 end
 
 function modgen.write_metadata(filename, metadata)

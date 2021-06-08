@@ -15,8 +15,8 @@ local function get_mapblock_name(prefix, pos, suffix)
     return modgen.get_mapblock_name(prefix, pos, suffix)
   end
 
-	return prefix .. "mapblock-" ..
-		pos.x .. "_" .. pos.y .. "_" .. pos.z .. "." .. suffix
+  return prefix .. "mapblock-" ..
+    pos.x .. "_" .. pos.y .. "_" .. pos.z .. "." .. suffix
 end
 
 local function read_compressed(filename)
