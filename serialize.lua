@@ -128,9 +128,12 @@ function modgen.serialize_part(pos)
       local relative_pos = vector.subtract(timer_pos, pos1)
       if timer:is_started() then
         data.has_metadata = true
+        local timeout = timer:get_timeout()
+        local elapsed = timer:get_elapsed()
         data.metadata.timers[minetest.pos_to_string(relative_pos)] = {
-          timeout = timer:get_timeout(),
-          elapsed = timer:get_elapsed()
+          timeout = timeout,
+          -- round down elapsed timer
+          elapsed = math.min(math.floor(elapsed/10)*10, timeout)
         }
       end
     end
