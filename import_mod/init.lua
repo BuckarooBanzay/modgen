@@ -5,8 +5,12 @@ local MP = minetest.get_modpath(modname)
 -- local functions/helpers
 local mapgen = dofile(MP .. "/mapgen.lua")
 local read_manifest = dofile(MP .. "/read_manifest.lua")
+local nodename_check = dofile(MP .. "/nodename_check.lua")
 
 local manifest = read_manifest()
+
+-- check if the nodes are available in the current world
+nodename_check(manifest)
 
 -- initialize mapgen
 mapgen(manifest)

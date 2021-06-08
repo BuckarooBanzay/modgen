@@ -131,6 +131,7 @@ function modgen.write_mod_files(path)
 		"init.lua",
 		"mapgen.lua",
 		"localize_nodeids.lua",
+		"nodename_check.lua",
 		"mod.conf"
 	}
 
