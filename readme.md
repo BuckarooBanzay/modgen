@@ -95,7 +95,7 @@ The mapdata is saved and compressed with `deflate`
 
 ## metadata / nodetimers
 
-Metadata and nodetimers are saved as compressed (`deflate` algorithm) json-file in `${modfolder}/map/mapblock-x_y_z.meta.bin`
+Metadata and nodetimers are saved as compressed (`deflate` algorithm) json-file in `${modfolder}/map/{x}/mapblock_{y}_{z}.meta.bin`
 
 ```json
 {
