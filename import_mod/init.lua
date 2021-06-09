@@ -10,7 +10,9 @@ local nodename_check = dofile(MP .. "/nodename_check.lua")
 local manifest = read_manifest()
 
 -- check if the nodes are available in the current world
-nodename_check(manifest)
+minetest.register_on_mods_loaded(function()
+  nodename_check(manifest)
+end)
 
 -- initialize mapgen
 mapgen(manifest)
