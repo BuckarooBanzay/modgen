@@ -15,7 +15,7 @@ local function get_mapblock_name(prefix, pos, suffix)
     return modgen.get_mapblock_name(prefix, pos, suffix, false)
   end
 
-  return prefix .. "/" .. pos.x .. "/mapblock-" ..
+  return prefix .. "/" .. pos.x .. "/mapblock_" ..
     pos.y .. "_" .. pos.z .. "." .. suffix
 end
 
