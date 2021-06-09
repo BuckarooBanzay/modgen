@@ -28,7 +28,9 @@ function modgen.export(name, pos1, pos2, fast, verbose)
 		playername = name,
 		current_part = 0,
 		delay = delay,
-		verbose = verbose
+		verbose = verbose,
+		-- bytes written to disk
+		bytes = 0
 	}
 
 	if not modgen.enable_inplace_save or not modgen.import_manifest then
@@ -53,7 +55,7 @@ function modgen.worker(ctx)
 		modgen.write_manifest(ctx.schemapath .. "/manifest.json")
 		modgen.write_mod_files(ctx.schemapath)
 		if ctx.verbose then
-			minetest.chat_send_player(ctx.playername, "[modgen] Export done")
+			minetest.chat_send_player(ctx.playername, "[modgen] Export done with " .. ctx.bytes .. " bytes")
 		end
 		return
 	end
@@ -77,14 +79,14 @@ function modgen.worker(ctx)
 
 	else
 		-- write mapblock to disk
-		modgen.write_mapblock(
+		local count = modgen.write_mapblock(
 			mapblock_filename,
 			data.node_ids, data.param1, data.param2
 		)
 
 		-- write metadata if available
 		if data.has_metadata then
-			modgen.write_metadata(
+			count = count + modgen.write_metadata(
 				mapblock_meta_filename,
 				data.metadata
 			)
@@ -93,6 +95,8 @@ function modgen.worker(ctx)
 			modgen.delete_mapblock(mapblock_meta_filename)
 		end
 
+		-- increment byte count
+		ctx.bytes = ctx.bytes + count
 		minetest.after(ctx.delay, modgen.worker, ctx)
 	end
 

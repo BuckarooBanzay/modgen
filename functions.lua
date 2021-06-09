@@ -48,6 +48,12 @@ function modgen.delete_mapblock(filename)
 	end
 end
 
+--- writes the mapblock data to the specified filename
+-- @param filename the filename to use
+-- @param node_ids the nodeid data as table
+-- @param param1 the param1 data as table
+-- @param param2 the param2 data as table
+-- @return the bytes written to disk
 function modgen.write_mapblock(filename, node_ids, param1, param2)
 	local file = env.io.open(filename,"wb")
 	local data = ""
@@ -66,21 +72,32 @@ function modgen.write_mapblock(filename, node_ids, param1, param2)
 		data = data .. string.char(param2[i])
 	end
 
-	file:write(minetest.compress(data, "deflate"))
+	local compressed_data = minetest.compress(data, "deflate")
+	file:write(compressed_data)
 
 	if file and file:close() then
-		return
+		return #compressed_data
 	else
 		error("write to '" .. filename .. "' failed!")
 	end
 end
 
+--- writes the mapblock metadatadata to the specified filename
+-- @param filename the filename to use
+-- @param metadata the metadata as table
+-- @return the bytes written to disk
 function modgen.write_metadata(filename, metadata)
 	local file = env.io.open(filename,"wb")
 	local json = minetest.write_json(metadata)
 
-	file:write(minetest.compress(json, "deflate"))
-	file:close()
+	local compressed_metadata = minetest.compress(json, "deflate")
+	file:write(compressed_metadata)
+
+	if file and file:close() then
+		return #compressed_metadata
+	else
+		error("write to '" .. filename .. "' failed!")
+	end
 end
 
 function modgen.write_manifest(filename)
