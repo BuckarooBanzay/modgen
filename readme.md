@@ -8,6 +8,8 @@ modgen mod for minetest
 
 Allows you to export a part of the map as a standalone mod which can be used as a mapgen
 
+Api docs: https://buckaroobanzay.github.io/modgen/
+
 ![Screenshot](./screenshot.png)
 
 # Commands
