@@ -1,3 +1,5 @@
+---------
+-- common utility functions
 
 -- copy environment to local scope
 local env = ...
@@ -96,6 +98,12 @@ function modgen.write_manifest(filename)
 	file:close()
 end
 
+--- returns the mapblock filename
+-- @param prefix the directory or file-prefix to use
+-- @param pos the mapblock position as vector
+-- @param suffix the filename suffix to use
+-- @param create_dirs create intermediate directories or not (read-only)
+-- @return the resulting filename
 function modgen.get_mapblock_name(prefix, pos, suffix, create_dirs)
 	local xstride_dir = prefix .. "/" .. pos.x
 	if create_dirs then
