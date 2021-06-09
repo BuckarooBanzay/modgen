@@ -125,17 +125,9 @@ end
 
 
 function modgen.write_mod_files(path)
-	local files = {
-		"deserialize.lua",
-		"read_manifest.lua",
-		"init.lua",
-		"mapgen.lua",
-		"localize_nodeids.lua",
-		"nodename_check.lua",
-		"mod.conf"
-	}
-
+	local basepath = modgen.MOD_PATH .. "/import_mod/"
+	local files = minetest.get_dir_list(basepath, false)
 	for _, filename in ipairs(files) do
-		modgen.copyfile(modgen.MOD_PATH .. "/import_mod/" .. filename, path .. "/" .. filename)
+		modgen.copyfile(basepath .. filename, path .. "/" .. filename)
 	end
 end
