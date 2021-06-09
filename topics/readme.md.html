@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>modgen minetest mod</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>modgen</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#manifest_json">manifest.json </a></li>
+<li><a href="#mapblocks">mapblocks </a></li>
+<li><a href="#metadata___nodetimers">metadata / nodetimers </a></li>
+</ul>
+
+
+<h2>Topics</h2>
+<ul class="">
+  <li><strong>readme</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../index.html">functions</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    modgen mod for minetest</p>
+
+<p><img src="https://github.com/BuckarooBanzay/modgen/workflows/luacheck/badge.svg" alt=""/>
+<a href="license.txt"><img src="https://img.shields.io/badge/License-MIT%20and%20CC%20BY--SA%203.0-green.svg" alt="License"/></a>
+<a href="https://content.minetest.net/packages/BuckarooBanzay/modgen"><img src="https://img.shields.io/badge/Download-ContentDB-blue.svg" alt="Download"/></a></p>
+
+<h1>Overview</h1>
+
+<p>Allows you to export a part of the map as a standalone mod which can be used as a mapgen</p>
+
+<p><img src="./screenshot.png" alt="Screenshot"/></p>
+
+<h1>Commands</h1>
+
+<ul>
+    <li><code>/pos1</code>, <code>/pos2</code> Set opposite corners of the export map</li>
+    <li><code>/export [fast]</code> Exports the map as a standalone mod into <code>${worldfolder}/modgen_mod_export</code></li>
+    <li><code>/autosave [on|off]</code> enables autosave feature (<strong>warning</strong>: may impact performance!)</li>
+</ul>
+
+<h1>In-place saving</h1>
+
+<p>After an initial mod-export the resulting mod can be edited live and in-place
+if the <code>modgen</code> mod is also present (optional).</p>
+
+<p>To enable the saving directly into the exported mod you have to add it to the "trusted_mods" setting:</p>
+
+<pre><code> secure.trusted_mods = modgen
+</code></pre>
+
+
+<p>Afterwards if you mark a region and execute <code>/export</code> the mapblocks are written to the exported mod itself</p>
+
+<h1>Obfuscating mapblock paths/coordinates</h1>
+
+<p>In some scenarios it can be important to obfuscate where mapblocks are generated (to make cheating harder for example).
+The pattern of the mapblock filename can be customized in a depending mod.</p>
+
+<p>An example:</p>
+
+<p><em>mod.conf</em></p>
+<pre><code> depends = modgen
+</code></pre>
+
+
+<p><em>init.lua</em></p>
+
+<pre>
+<span class="keyword">function</span> modgen.get_mapblock_name(prefix, pos, suffix, create_dirs)
+  <span class="keyword">local</span> pos_str = minetest.pos_to_string(pos)
+  <span class="comment">-- simply do a "sha1" over the position string
+</span>  <span class="comment">-- reconstruction of the coordinate can only be achieved by hash-collision (brute-force)
+</span>  <span class="keyword">local</span> sha_hash = minetest.sha1(pos_str)
+  <span class="keyword">return</span> prefix .. <span class="string">"mapblock-"</span> .. sha_hash .. <span class="string">"."</span> .. suffix
+<span class="keyword">end</span>
+</pre>
+
+
+<p>The above example will rewrite the mapblock-filenames:</p>
+
+<pre><code> mapblock-0ad55e954876c567f7c5629faa782bc62c5aa800.bin
+ mapblock-106de3dc97ac24f9500f53efe8f656f17177e154.bin
+ mapblock-1635341941674dee01ac10dd0b663ff2cc8fe598.bin
+ mapblock-25dcdb8997491affc4339ebc31536a9602b001c1.bin
+</code></pre>
+
+
+<p>In this case the position of the saved mapblocks isn't easily visible.
+This may be helpful in maps where treasures are hidden in remote areas only accessible by teleports.</p>
+
+<h1>Export format</h1>
+
+<p><a name="manifest_json"></a></p>
+<h2>manifest.json</h2>
+
+<p>Json file that serves as an index to look up content-id's:</p>
+
+
+<pre>
+{
+  <span class="string">"next_id"</span>: <span class="number">82</span>,
+  <span class="string">"node_mapping"</span>: {
+    <span class="string">"access_cards:palm_scanner_off"</span>: <span class="number">25</span>,
+    <span class="string">"air"</span>: <span class="number">0</span>,
+    <span class="string">"default:chest"</span>: <span class="number">53</span>,
+    <span class="string">"digilines:wire_std_00100000"</span>: <span class="number">72</span>
+  }
+}
+</pre>
+
+
+<p><a name="mapblocks"></a></p>
+<h2>mapblocks</h2>
+
+<p>Mapblocks are saved in <code>${modfolder}/map/{x}/mapblock_{y}_{z}.bin</code>
+<strong>Hint</strong>: x/y/z are the coordinates in mapblocks</p>
+
+<p>The mapdata is saved and compressed with <code>deflate</code></p>
+
+<ul>
+    <li>4096*2 Bytes: Node-ids for the mapblock in z/x/y order as integer MSB first</li>
+    <li>4096 Bytes: Param1 data</li>
+    <li>4096 Bytes: Param2 data</li>
+</ul>
+
+<p><a name="metadata___nodetimers"></a></p>
+<h2>metadata / nodetimers</h2>
+
+<p>Metadata and nodetimers are saved as compressed (<code>deflate</code> algorithm) json-file in <code>${modfolder}/map/{x}/mapblock_{y}_{z}.meta.bin</code></p>
+
+
+<pre>
+{
+  <span class="string">"meta"</span>: {
+    <span class="string">"(1,3,14)"</span>: {
+      <span class="string">"fields"</span>: {
+        <span class="string">"configured"</span>: <span class="string">"1"</span>,
+        <span class="string">"key"</span>: <span class="string">"Level 1 Access"</span>
+      },
+      <span class="string">"inventory"</span>: null
+    },
+    <span class="string">"(11,3,14)"</span>: {
+      <span class="string">"fields"</span>: {
+        <span class="string">"configured"</span>: <span class="string">"1"</span>,
+        <span class="string">"key"</span>: <span class="string">"Biolab Access"</span>
+      },
+      <span class="string">"inventory"</span>: null
+    },
+    <span class="string">"(13,7,10)"</span>: {
+      <span class="string">"fields"</span>: {
+        <span class="string">"gain"</span>: <span class="string">"2"</span>,
+        <span class="string">"hear_distance"</span>: <span class="string">"32"</span>,
+        <span class="string">"interval_max"</span>: <span class="string">"20"</span>,
+        <span class="string">"interval_min"</span>: <span class="string">"20"</span>,
+        <span class="string">"randomize_position"</span>: <span class="string">"0"</span>,
+        <span class="string">"selected_sound_key"</span>: <span class="string">"soundblock_scifi_ambient_3"</span>,
+        <span class="string">"state"</span>: <span class="string">"on"</span>
+      },
+      <span class="string">"inventory"</span>: null
+    },
+    <span class="string">"(8,7,10)"</span>: {
+      <span class="string">"fields"</span>: {
+        <span class="string">"formspec"</span>: <span class="string">"size[8,9]list[current_name;main;0,0.3;8,4;]list[current_player;main;0,4.85;8,1;]list[current_player;main;0,6.08;8,3;8]listring[current_name;main]listring[current_player;main]image[0,4.85;1,1;gui_hb_bg.png]image[1,4.85;1,1;gui_hb_bg.png]image[2,4.85;1,1;gui_hb_bg.png]image[3,4.85;1,1;gui_hb_bg.png]image[4,4.85;1,1;gui_hb_bg.png]image[5,4.85;1,1;gui_hb_bg.png]image[6,4.85;1,1;gui_hb_bg.png]image[7,4.85;1,1;gui_hb_bg.png]"</span>,
+        <span class="string">"infotext"</span>: <span class="string">"Box"</span>
+      },
+      <span class="string">"inventory"</span>: {
+        <span class="string">"main"</span>: [
+          <span class="string">""</span>
+        ]
+      }
+    },
+    <span class="string">"(9,8,10)"</span>: {
+      <span class="string">"fields"</span>: {
+        <span class="string">"formspec"</span>: <span class="string">"size[8,9]list[current_name;main;0,0.3;8,4;]list[current_player;main;0,4.85;8,1;]list[current_player;main;0,6.08;8,3;8]listring[current_name;main]listring[current_player;main]image[0,4.85;1,1;gui_hb_bg.png]image[1,4.85;1,1;gui_hb_bg.png]image[2,4.85;1,1;gui_hb_bg.png]image[3,4.85;1,1;gui_hb_bg.png]image[4,4.85;1,1;gui_hb_bg.png]image[5,4.85;1,1;gui_hb_bg.png]image[6,4.85;1,1;gui_hb_bg.png]image[7,4.85;1,1;gui_hb_bg.png]"</span>,
+        <span class="string">"infotext"</span>: <span class="string">"Box"</span>
+      },
+      <span class="string">"inventory"</span>: {
+        <span class="string">"main"</span>: [
+          <span class="string">""</span>
+        ]
+      }
+    }
+  },
+  <span class="string">"timers"</span>: {
+    <span class="string">"(13,7,10)"</span>: {
+      <span class="string">"elapsed"</span>: <span class="number">5.200000286102295</span>,
+      <span class="string">"timeout"</span>: <span class="number">20</span>
+    }
+  }
+}
+</pre>
+
+
+<h1>License</h1>
+
+<p>MIT
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2021-06-09 16:29:51 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
