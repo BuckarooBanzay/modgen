@@ -10,6 +10,9 @@ modgen = {
   -- current export/import version
   version = 2,
 
+  -- autosave feature
+  autosave = false,
+
   -- nodename to id mapping
   node_mapping = {},
 

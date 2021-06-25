@@ -1,12 +1,12 @@
 
 
 minetest.register_chatcommand("autosave", {
-	func = function(name, params)
+	func = function(_, params)
 		if params == "on" then
-			modgen.set_autosave(name, true)
+			modgen.autosave = true
 			return true, "Autosave enabled"
 		else
-			modgen.set_autosave(name, false)
+			modgen.autosave = false
 			return true, "Autosave disabled"
 		end
 	end

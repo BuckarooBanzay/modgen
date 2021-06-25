@@ -47,7 +47,8 @@ function modgen.export(name, pos1, pos2, fast, verbose)
 		minetest.mkdir(ctx.schemapath .. "/map")
 	end
 
-	minetest.after(0, modgen.worker, ctx)
+	-- initial call to worker
+	modgen.worker(ctx)
 end
 
 
