@@ -10,6 +10,8 @@ Allows you to export a part of the map as a standalone mod which can be used as 
 
 Api docs: https://buckaroobanzay.github.io/modgen/
 
+Demo: https://github.com/BuckarooBanzay/mesecons_lab
+
 ![Screenshot](./screenshot.png)
 
 # Commands
