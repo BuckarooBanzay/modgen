@@ -60,16 +60,16 @@ function modgen.worker(ctx)
 		return
 	end
 
+	local mapblock_pos = modgen.get_mapblock(ctx.current_pos)
+	local data = modgen.serialize_part(ctx.current_pos)
+
 	if ctx.verbose then
-		minetest.chat_send_player(ctx.playername, "[modgen] Export pos: " .. minetest.pos_to_string(ctx.current_pos) ..
+		minetest.chat_send_player(ctx.playername, "[modgen] Export mapblock: " .. minetest.pos_to_string(mapblock_pos) ..
 		" Progress: " .. ctx.progress_percent .. "% (" .. ctx.current_part .. "/" .. ctx.total_parts .. ")")
 	end
 
-	local mapblock = modgen.get_mapblock(ctx.current_pos)
-	local data = modgen.serialize_part(ctx.current_pos)
-
-	local mapblock_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "bin", true)
-	local mapblock_meta_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock, "meta.bin", true)
+	local mapblock_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock_pos, "bin", true)
+	local mapblock_meta_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock_pos, "meta.bin", true)
 
 	if data.only_air then
 		-- remove mapblock if it exists
