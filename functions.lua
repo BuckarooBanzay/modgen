@@ -127,7 +127,13 @@ end
 function modgen.get_mapblock_name(prefix, pos, suffix, create_dirs)
 	local xstride_dir = prefix .. "/" .. pos.x
 	if create_dirs then
-		minetest.mkdir(xstride_dir)
+		if env.os.execute then
+			-- call os function for mkdir
+			-- TODO: portability
+			env.os.execute("mkdir " .. xstride_dir)
+		else
+			minetest.mkdir(xstride_dir)
+		end
 	end
 	return xstride_dir .. "/mapblock_" .. pos.y .. "_" .. pos.z .. "." .. suffix
 end
