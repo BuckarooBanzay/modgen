@@ -19,6 +19,9 @@ function modgen.sort_pos(pos1, pos2)
 	return pos1, pos2
 end
 
+--- calculates the mapblock position from a node position
+-- @param pos the node-position
+-- @return the mapblock position
 function modgen.get_mapblock(pos)
 	return vector.floor( vector.divide(pos, 16))
 end

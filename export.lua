@@ -1,4 +1,12 @@
+---------
+-- export functions
 
+--- exports the specified region to the mapgen-mod
+-- @param name the playername to report infos to
+-- @param pos1 the first position of the export region
+-- @param pos2 the second position of the export region
+-- @param fast if true: export a mapblock every server-step
+-- @param verbose if true: report detailed stats while exporting
 function modgen.export(name, pos1, pos2, fast, verbose)
 	-- get mapblock edges
 	local min = modgen.get_mapblock_bounds(pos1)
