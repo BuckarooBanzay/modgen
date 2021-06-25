@@ -23,7 +23,6 @@ minetest.after(1, worker)
 
 local function deferred_export(pos1, pos2)
     pos1, pos2 = modgen.sort_pos(pos1, pos2)
-    print("deferred_export" .. dump(pos1) .. dump(pos2))
     if not modgen.autosave then
         return
     end
