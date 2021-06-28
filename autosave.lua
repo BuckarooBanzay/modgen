@@ -3,6 +3,7 @@
 -- list of mapblocks marked for export
 local mapblocks = {}
 
+-- autosave worker function
 local function worker()
     local count = 0
     for hash in pairs(mapblocks) do
@@ -22,10 +23,11 @@ end
 minetest.after(1, worker)
 
 local function deferred_export(pos1, pos2)
-    pos1, pos2 = modgen.sort_pos(pos1, pos2)
     if not modgen.autosave then
         return
     end
+
+    pos1, pos2 = modgen.sort_pos(pos1, pos2)
 
     local mapblock_pos1 = modgen.get_mapblock(pos1)
     local mapblock_pos2 = modgen.get_mapblock(pos2)
@@ -68,3 +70,18 @@ if minetest.get_modpath("worldedit") then
     -- TODO: stack/copy
     -- TODO: defer export
 end
+
+minetest.register_on_mods_loaded(function()
+    for nodename, def in pairs(minetest.registered_nodes) do
+        if type(def.on_receive_fields) == "function" then
+            -- intercept formspec events
+            local old_on_receive_fields = def.on_receive_fields
+            minetest.override_item(nodename, {
+                on_receive_fields = function(pos, formname, fields, sender)
+                    deferred_export(pos, pos)
+                    old_on_receive_fields(pos, formname, fields, sender)
+                end
+            })
+        end
+    end
+end)
