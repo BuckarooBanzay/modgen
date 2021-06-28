@@ -130,7 +130,7 @@ function modgen.get_mapblock_name(prefix, pos, suffix, create_dirs)
 		if env.os.execute then
 			-- call os function for mkdir
 			-- TODO: portability
-			env.os.execute("mkdir " .. xstride_dir)
+			env.os.execute("mkdir -p " .. xstride_dir)
 		else
 			minetest.mkdir(xstride_dir)
 		end
