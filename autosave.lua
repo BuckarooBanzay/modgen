@@ -64,11 +64,16 @@ if minetest.get_modpath("worldedit") then
         end
     end
 
+    -- covers //set //move
     worldedit_intercept("set", function(pos1, pos2) return pos1, pos2 end)
+    -- covers //param2
     worldedit_intercept("set_param2", function(pos1, pos2) return pos1, pos2 end)
+    -- covers //replace
     worldedit_intercept("replace", function(pos1, pos2) return pos1, pos2 end)
-    -- TODO: stack/copy
-    -- TODO: defer export
+    -- covers //copy //stack
+    worldedit_intercept("copy2", function(pos1, pos2, off)
+        return vector.add(pos1, off), vector.add(pos2, off)
+    end)
 end
 
 minetest.register_on_mods_loaded(function()
