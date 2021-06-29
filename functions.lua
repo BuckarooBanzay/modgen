@@ -112,7 +112,7 @@ function modgen.write_manifest(filename)
 	manifest.version = modgen.version
 
 	local file = env.io.open(filename,"w")
-	local json = minetest.write_json(manifest)
+	local json = minetest.write_json(manifest, true)
 
 	file:write(json)
 	file:close()
