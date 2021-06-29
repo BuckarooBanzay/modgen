@@ -66,6 +66,8 @@ if minetest.get_modpath("worldedit") then
 
     -- covers //set //move
     worldedit_intercept("set", function(pos1, pos2) return pos1, pos2 end)
+    -- covers //fixlight
+    worldedit_intercept("fixlight", function(pos1, pos2) return pos1, pos2 end)
     -- covers //param2
     worldedit_intercept("set_param2", function(pos1, pos2) return pos1, pos2 end)
     -- covers //replace
