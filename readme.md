@@ -18,6 +18,7 @@ Demo: https://github.com/BuckarooBanzay/mesecons_lab
 
 * `/pos1`, `/pos2` Set opposite corners of the export map
 * `/export [fast]` Exports the map as a standalone mod into `${worldfolder}/modgen_mod_export`
+* `/modgen_stats` Returns some stats about the exported mapblocks and size
 * `/autosave [on|off]` enables autosave feature (**warning**: may not work on some worldedit commands)
 
 # In-place saving

@@ -45,7 +45,38 @@ function modgen.int_to_bytes(i)
 	return(string.char(h, l));
 end
 
+function modgen.get_filesize(filename)
+	local file = env.io.open(filename,"r")
+	if file then
+		local size = file:seek("end")
+		file:close()
+		return size
+	else
+		return 0
+	end
+end
+
 function modgen.delete_mapblock(filename)
+	local size = modgen.get_filesize(filename)
+	if size > 0 then
+		-- update size
+		modgen.import_manifest.size = modgen.import_manifest.size - size
+		modgen.import_manifest.mapblock_count = modgen.import_manifest.mapblock_count - 1
+	end
+
+	if env.os.remove then
+		env.os.remove(filename)
+	end
+end
+
+function modgen.delete_metadata(filename)
+	local size = modgen.get_filesize(filename)
+	if size > 0 then
+		-- update size
+		modgen.import_manifest.size = modgen.import_manifest.size - size
+		modgen.import_manifest.metadata_count = modgen.import_manifest.metadata_count - 1
+	end
+
 	if env.os.remove then
 		env.os.remove(filename)
 	end
@@ -58,6 +89,8 @@ end
 -- @param param2 the param2 data as table
 -- @return the bytes written to disk
 function modgen.write_mapblock(filename, node_ids, param1, param2)
+	local previous_size = modgen.get_filesize(filename)
+
 	local file = env.io.open(filename,"wb")
 	local data = ""
 
@@ -76,7 +109,16 @@ function modgen.write_mapblock(filename, node_ids, param1, param2)
 	end
 
 	local compressed_data = minetest.compress(data, "deflate")
+	local new_size = #compressed_data
 	file:write(compressed_data)
+
+	if previous_size == 0 then
+		-- increment mapblock count
+		modgen.import_manifest.mapblock_count = modgen.import_manifest.mapblock_count + 1
+	end
+
+	-- update size
+	modgen.import_manifest.size = modgen.import_manifest.size + new_size - previous_size
 
 	if file and file:close() then
 		return #compressed_data
@@ -90,11 +132,22 @@ end
 -- @param metadata the metadata as table
 -- @return the bytes written to disk
 function modgen.write_metadata(filename, metadata)
+	local previous_size = modgen.get_filesize(filename)
+
 	local file = env.io.open(filename,"wb")
 	local json = minetest.write_json(metadata)
 
 	local compressed_metadata = minetest.compress(json, "deflate")
+	local new_size = #compressed_metadata
 	file:write(compressed_metadata)
+
+	if previous_size == 0 then
+		-- increment metadata count
+		modgen.import_manifest.metadata_count = modgen.import_manifest.metadata_count + 1
+	end
+
+	-- update size
+	modgen.import_manifest.size = modgen.import_manifest.size + new_size - previous_size
 
 	if file and file:close() then
 		return #compressed_metadata
@@ -110,6 +163,9 @@ function modgen.write_manifest(filename)
 	manifest.node_mapping = modgen.node_mapping
 	manifest.next_id = modgen.next_id
 	manifest.version = modgen.version
+	manifest.size = modgen.import_manifest.size or 0
+	manifest.mapblock_count = modgen.import_manifest.mapblock_count or 0
+	manifest.metadata_count = modgen.import_manifest.metadata_count or 0
 
 	local file = env.io.open(filename,"w")
 	local json = minetest.write_json(manifest, true)

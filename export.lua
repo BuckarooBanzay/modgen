@@ -83,7 +83,7 @@ function modgen.worker(ctx)
 	if data.only_air then
 		-- remove mapblock if it exists
 		modgen.delete_mapblock(mapblock_filename)
-		modgen.delete_mapblock(mapblock_meta_filename)
+		modgen.delete_metadata(mapblock_meta_filename)
 		minetest.after(ctx.delay, modgen.worker, ctx)
 
 	else
@@ -101,7 +101,7 @@ function modgen.worker(ctx)
 			)
 		else
 			-- remove metadata if it exists
-			modgen.delete_mapblock(mapblock_meta_filename)
+			modgen.delete_metadata(mapblock_meta_filename)
 		end
 
 		-- increment byte count
