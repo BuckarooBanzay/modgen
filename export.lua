@@ -41,7 +41,7 @@ function modgen.export(name, pos1, pos2, fast, verbose)
 		bytes = 0
 	}
 
-	if not modgen.enable_inplace_save or not modgen.import_manifest then
+	if not modgen.enable_inplace_save then
 		-- create directories if not saving in-place
 		minetest.mkdir(ctx.schemapath)
 		minetest.mkdir(ctx.schemapath .. "/map")

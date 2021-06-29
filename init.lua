@@ -1,6 +1,8 @@
 local MP = minetest.get_modpath("modgen")
 local storage = minetest.get_mod_storage()
 
+local VERSION = 2
+
 -- mod namespace
 modgen = {
   pos1 = {},
@@ -8,8 +10,8 @@ modgen = {
   MOD_PATH = MP,
   PART_LENGTH = 16,
 
-  -- current export/import version
-  version = 2,
+  -- current version
+  version = VERSION,
 
   -- autosave feature
   autosave = storage:get_int("autosave") == 1,
@@ -17,17 +19,24 @@ modgen = {
   -- mod storage
   storage = storage,
 
-  -- nodename to id mapping
-  node_mapping = {},
-
-  -- next mapping id
-  next_id = 0,
-
   -- export path for the generated mod
   export_path = minetest.get_worldpath() .. "/modgen_mod_export",
 
   -- manifest of already existing import-mod if available
-  import_manifest = nil,
+  manifest = {
+    -- stats
+    size = 0,
+    mapblock_count = 0,
+    metadata_count = 0,
+
+    -- exported name to nodeid mapping
+    node_mapping = {},
+    -- next nodeid
+
+    next_id = 0,
+    -- current export/import version
+    version = VERSION
+  },
 
   -- enables saving mapblocks in-place
   enable_inplace_save = false
@@ -60,3 +69,5 @@ dofile(MP.."/commands/export.lua")
 dofile(MP.."/commands/autosave.lua")
 dofile(MP.."/commands/pos.lua")
 
+-- try to read existing manifest in worldpath
+modgen.read_manifest(modgen.export_path .. "/manifest.json")

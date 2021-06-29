@@ -66,16 +66,16 @@ function modgen.serialize_part(pos)
       -- lookup node_id
       local nodename = minetest.get_name_from_content_id(node_id)
 
-      if not modgen.node_mapping[nodename] then
+      if not modgen.manifest.node_mapping[nodename] then
         -- mapping does not exist yet, create it
-        modgen.node_mapping[nodename] = modgen.next_id
-        external_node_id_mapping[node_id] = modgen.next_id
+        modgen.manifest.node_mapping[nodename] = modgen.manifest.next_id
+        external_node_id_mapping[node_id] = modgen.manifest.next_id
 
         -- increment next external id
-        modgen.next_id = modgen.next_id + 1
+        modgen.manifest.next_id = modgen.manifest.next_id + 1
       else
         -- mapping exists, look it up
-        local external_id = modgen.node_mapping[nodename]
+        local external_id = modgen.manifest.node_mapping[nodename]
         external_node_id_mapping[node_id] = external_id
       end
     end

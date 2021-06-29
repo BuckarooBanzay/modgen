@@ -6,5 +6,5 @@ return function()
 	local instr = infile:read("*a")
 	infile:close()
 
-  return minetest.parse_json(instr or "{}")
+	return minetest.parse_json(instr or "{}")
 end

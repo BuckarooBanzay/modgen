@@ -60,8 +60,8 @@ function modgen.delete_mapblock(filename)
 	local size = modgen.get_filesize(filename)
 	if size > 0 then
 		-- update size
-		modgen.import_manifest.size = modgen.import_manifest.size - size
-		modgen.import_manifest.mapblock_count = modgen.import_manifest.mapblock_count - 1
+		modgen.manifest.size = modgen.manifest.size - size
+		modgen.manifest.mapblock_count = modgen.manifest.mapblock_count - 1
 	end
 
 	if env.os.remove then
@@ -73,8 +73,8 @@ function modgen.delete_metadata(filename)
 	local size = modgen.get_filesize(filename)
 	if size > 0 then
 		-- update size
-		modgen.import_manifest.size = modgen.import_manifest.size - size
-		modgen.import_manifest.metadata_count = modgen.import_manifest.metadata_count - 1
+		modgen.manifest.size = modgen.manifest.size - size
+		modgen.manifest.metadata_count = modgen.manifest.metadata_count - 1
 	end
 
 	if env.os.remove then
@@ -114,11 +114,11 @@ function modgen.write_mapblock(filename, node_ids, param1, param2)
 
 	if previous_size == 0 then
 		-- increment mapblock count
-		modgen.import_manifest.mapblock_count = modgen.import_manifest.mapblock_count + 1
+		modgen.manifest.mapblock_count = modgen.manifest.mapblock_count + 1
 	end
 
 	-- update size
-	modgen.import_manifest.size = modgen.import_manifest.size + new_size - previous_size
+	modgen.manifest.size = modgen.manifest.size + new_size - previous_size
 
 	if file and file:close() then
 		return #compressed_data
@@ -143,11 +143,11 @@ function modgen.write_metadata(filename, metadata)
 
 	if previous_size == 0 then
 		-- increment metadata count
-		modgen.import_manifest.metadata_count = modgen.import_manifest.metadata_count + 1
+		modgen.manifest.metadata_count = modgen.manifest.metadata_count + 1
 	end
 
 	-- update size
-	modgen.import_manifest.size = modgen.import_manifest.size + new_size - previous_size
+	modgen.manifest.size = modgen.manifest.size + new_size - previous_size
 
 	if file and file:close() then
 		return #compressed_metadata
@@ -157,21 +157,27 @@ function modgen.write_metadata(filename, metadata)
 end
 
 function modgen.write_manifest(filename)
-	local manifest = modgen.import_manifest or {}
-
-	-- merge previous config if available
-	manifest.node_mapping = modgen.node_mapping
-	manifest.next_id = modgen.next_id
-	manifest.version = modgen.version
-	manifest.size = modgen.import_manifest.size or 0
-	manifest.mapblock_count = modgen.import_manifest.mapblock_count or 0
-	manifest.metadata_count = modgen.import_manifest.metadata_count or 0
-
 	local file = env.io.open(filename,"w")
-	local json = minetest.write_json(manifest, true)
+	local json = minetest.write_json(modgen.manifest, true)
 
 	file:write(json)
 	file:close()
+end
+
+function modgen.read_manifest(filename)
+	local infile = io.open(filename, "r")
+	if not infile then
+		-- no manifest file found
+		return
+	end
+
+	local instr = infile:read("*a")
+	infile:close()
+
+	if instr then
+		-- use existing manifest
+		modgen.manifest = minetest.parse_json(instr)
+	end
 end
 
 --- returns the mapblock filename
