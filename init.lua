@@ -1,4 +1,5 @@
 local MP = minetest.get_modpath("modgen")
+local storage = minetest.get_mod_storage()
 
 -- mod namespace
 modgen = {
@@ -11,7 +12,10 @@ modgen = {
   version = 2,
 
   -- autosave feature
-  autosave = false,
+  autosave = storage:get_int("autosave") == 1,
+
+  -- mod storage
+  storage = storage,
 
   -- nodename to id mapping
   node_mapping = {},
