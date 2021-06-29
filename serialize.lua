@@ -111,7 +111,7 @@ function modgen.serialize_part(pos)
     end
 
     -- dirty workaround for https://github.com/minetest/minetest/issues/8943
-    if next(meta) then
+    if next(meta) and next(meta.fields) and next(meta.inventory) then
       data.has_metadata = true
     end
 
