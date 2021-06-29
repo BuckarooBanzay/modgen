@@ -79,9 +79,43 @@ minetest.register_on_mods_loaded(function()
             minetest.override_item(nodename, {
                 on_receive_fields = function(pos, formname, fields, sender)
                     deferred_export(pos, pos)
-                    old_on_receive_fields(pos, formname, fields, sender)
+                    return old_on_receive_fields(pos, formname, fields, sender)
                 end
             })
         end
+
+        if type(def.on_metadata_inventory_move) == "function" then
+            -- intercept inv move event
+            local old_inv_move = def.on_metadata_inventory_move
+            minetest.override_item(nodename, {
+                on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
+                    deferred_export(pos, pos)
+                    return old_inv_move(pos, from_list, from_index, to_list, to_index, count, player)
+                end
+            })
+        end
+
+        if type(def.on_metadata_inventory_put) == "function" then
+            -- intercept inv put event
+            local old_inv_put = def.on_metadata_inventory_put
+            minetest.override_item(nodename, {
+                on_metadata_inventory_put = function(pos, listname, index, stack, player)
+                    deferred_export(pos, pos)
+                    return old_inv_put(pos, listname, index, stack, player)
+                end
+            })
+        end
+
+        if type(def.on_metadata_inventory_take) == "function" then
+            -- intercept inv take event
+            local old_inv_take = def.on_metadata_inventory_take
+            minetest.override_item(nodename, {
+                on_metadata_inventory_take = function(pos, listname, index, stack, player)
+                    deferred_export(pos, pos)
+                    return old_inv_take(pos, listname, index, stack, player)
+                end
+            })
+        end
+
     end
 end)
