@@ -72,6 +72,8 @@ if minetest.get_modpath("worldedit") then
     worldedit_intercept("set_param2", function(pos1, pos2) return pos1, pos2 end)
     -- covers //replace
     worldedit_intercept("replace", function(pos1, pos2) return pos1, pos2 end)
+    -- covers //load
+    worldedit_intercept("keep_loaded", function(pos1, pos2) return pos1, pos2 end)
     -- covers //copy //stack
     worldedit_intercept("copy2", function(pos1, pos2, off)
         return vector.add(pos1, off), vector.add(pos2, off)
