@@ -40,6 +40,7 @@
 <ul class="nowrap">
   <li><a href="../modules/export.html">export</a></li>
   <li><strong>functions</strong></li>
+  <li><a href="../modules/serialize.html">serialize</a></li>
 </ul>
 <h2>Topics</h2>
 <ul class="">
@@ -64,6 +65,22 @@
 	<td class="summary">calculates the mapblock position from a node position</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#modgen.int_to_bytes">modgen.int_to_bytes (i)</a></td>
+	<td class="summary">Converts an integer number to two bytes</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modgen.get_filesize">modgen.get_filesize (filename)</a></td>
+	<td class="summary">Returns the filesize of the specified file</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modgen.delete_mapblock">modgen.delete_mapblock (filename)</a></td>
+	<td class="summary">Deletes a mapblock file</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modgen.delete_metadata">modgen.delete_metadata (filename)</a></td>
+	<td class="summary">Deletes a metadata mapblock file</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#modgen.write_mapblock">modgen.write_mapblock (filename, node_ids, param1, param2)</a></td>
 	<td class="summary">writes the mapblock data to the specified filename</td>
 	</tr>
@@ -72,8 +89,24 @@
 	<td class="summary">writes the mapblock metadatadata to the specified filename</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#modgen.write_manifest">modgen.write_manifest (filename)</a></td>
+	<td class="summary">Writes the manifest to a file in json format</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modgen.read_manifest">modgen.read_manifest (filename)</a></td>
+	<td class="summary">Reads a minfest from a json file</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#modgen.get_mapblock_name">modgen.get_mapblock_name (prefix, pos, suffix, create_dirs)</a></td>
 	<td class="summary">returns the mapblock filename</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modgen.copyfile">modgen.copyfile (src, target)</a></td>
+	<td class="summary">copies a files from the source to the target</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modgen.write_mod_files">modgen.write_mod_files (path)</a></td>
+	<td class="summary">copies the modgen-import skeleton to the specified patch</td>
 	</tr>
 </table>
 
@@ -104,6 +137,96 @@
 
         the mapblock position
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modgen.int_to_bytes"></a>
+    <strong>modgen.int_to_bytes (i)</strong>
+    </dt>
+    <dd>
+    Converts an integer number to two bytes
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">i</span>
+         the integer number
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a table with to bytes/chars
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modgen.get_filesize"></a>
+    <strong>modgen.get_filesize (filename)</strong>
+    </dt>
+    <dd>
+    Returns the filesize of the specified file
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+         the filename
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the size in bytes or 0 if not found
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modgen.delete_mapblock"></a>
+    <strong>modgen.delete_mapblock (filename)</strong>
+    </dt>
+    <dd>
+    Deletes a mapblock file
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+         filename the filename of the mapblock
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modgen.delete_metadata"></a>
+    <strong>modgen.delete_metadata (filename)</strong>
+    </dt>
+    <dd>
+    Deletes a metadata mapblock file
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+         filename the filename of the mapblock
+        </li>
+    </ul>
+
 
 
 
@@ -172,6 +295,46 @@
 
 </dd>
     <dt>
+    <a name = "modgen.write_manifest"></a>
+    <strong>modgen.write_manifest (filename)</strong>
+    </dt>
+    <dd>
+    Writes the manifest to a file in json format
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+         the filename to write to
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modgen.read_manifest"></a>
+    <strong>modgen.read_manifest (filename)</strong>
+    </dt>
+    <dd>
+    Reads a minfest from a json file
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+         the filename of the manifest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "modgen.get_mapblock_name"></a>
     <strong>modgen.get_mapblock_name (prefix, pos, suffix, create_dirs)</strong>
     </dt>
@@ -205,6 +368,49 @@
 
 
 </dd>
+    <dt>
+    <a name = "modgen.copyfile"></a>
+    <strong>modgen.copyfile (src, target)</strong>
+    </dt>
+    <dd>
+    copies a files from the source to the target
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">src</span>
+         the source file
+        </li>
+        <li><span class="parameter">target</span>
+         the target file
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modgen.write_mod_files"></a>
+    <strong>modgen.write_mod_files (path)</strong>
+    </dt>
+    <dd>
+    copies the modgen-import skeleton to the specified patch
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+         the path to use
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
 </dl>
 
 
@@ -212,7 +418,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2021-06-29 17:19:59 </i>
+<i style="float:right;">Last updated 2021-06-30 13:38:25 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

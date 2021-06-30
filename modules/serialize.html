@@ -38,9 +38,9 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
-  <li><strong>export</strong></li>
+  <li><a href="../modules/export.html">export</a></li>
   <li><a href="../modules/functions.html">functions</a></li>
-  <li><a href="../modules/serialize.html">serialize</a></li>
+  <li><strong>serialize</strong></li>
 </ul>
 <h2>Topics</h2>
 <ul class="">
@@ -51,8 +51,8 @@
 
 <div id="content">
 
-<h1>Module <code>export</code></h1>
-<p>export functions</p>
+<h1>Module <code>serialize</code></h1>
+<p>serialization functions</p>
 <p>
 
 </p>
@@ -61,8 +61,8 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#modgen.export">modgen.export (name, pos1, pos2, fast, verbose)</a></td>
-	<td class="summary">exports the specified region to the mapgen-mod</td>
+	<td class="name" nowrap><a href="#modgen.serialize_part">modgen.serialize_part (pos)</a></td>
+	<td class="summary">Serializes the mapblock at the given position</td>
 	</tr>
 </table>
 
@@ -74,32 +74,25 @@
 
     <dl class="function">
     <dt>
-    <a name = "modgen.export"></a>
-    <strong>modgen.export (name, pos1, pos2, fast, verbose)</strong>
+    <a name = "modgen.serialize_part"></a>
+    <strong>modgen.serialize_part (pos)</strong>
     </dt>
     <dd>
-    exports the specified region to the mapgen-mod
+    Serializes the mapblock at the given position
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">name</span>
-         the playername to report infos to
-        </li>
-        <li><span class="parameter">pos1</span>
-         the first position of the export region
-        </li>
-        <li><span class="parameter">pos2</span>
-         the second position of the export region
-        </li>
-        <li><span class="parameter">fast</span>
-         if true: export a mapblock every server-step
-        </li>
-        <li><span class="parameter">verbose</span>
-         if true: report detailed stats while exporting
+        <li><span class="parameter">pos</span>
+         the node-position
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+        the serialized mapblock as table
+    </ol>
 
 
 
