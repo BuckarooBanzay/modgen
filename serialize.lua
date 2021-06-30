@@ -1,3 +1,8 @@
+---------
+-- serialization functions
+
+
+
 -- collect nodes with on_timer attributes
 local node_names_with_timer = {}
 minetest.register_on_mods_loaded(function()
@@ -15,6 +20,9 @@ local ignore_content_id = minetest.get_content_id("ignore")
 -- mapping from local node-id to export-node-id
 local external_node_id_mapping = {}
 
+--- Serializes the mapblock at the given position
+-- @param pos the node-position
+-- @return the serialized mapblock as table
 function modgen.serialize_part(pos)
   local pos1, pos2 = modgen.get_mapblock_bounds(pos)
 

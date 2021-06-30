@@ -38,6 +38,9 @@ function modgen.get_mapblock_bounds_from_mapblock(mapblock)
 	return min, max
 end
 
+--- Converts an integer number to two bytes
+-- @param i the integer number
+-- @return a table with to bytes/chars
 function modgen.int_to_bytes(i)
 	local x =i + 32768
 	local h = math.floor(x/256) % 256;
@@ -45,6 +48,9 @@ function modgen.int_to_bytes(i)
 	return(string.char(h, l));
 end
 
+--- Returns the filesize of the specified file
+-- @param filename the filename
+-- @return the size in bytes or 0 if not found
 function modgen.get_filesize(filename)
 	local file = env.io.open(filename,"r")
 	if file then
@@ -56,6 +62,8 @@ function modgen.get_filesize(filename)
 	end
 end
 
+--- Deletes a mapblock file
+-- @param filename filename the filename of the mapblock
 function modgen.delete_mapblock(filename)
 	local size = modgen.get_filesize(filename)
 	if size > 0 then
@@ -69,6 +77,8 @@ function modgen.delete_mapblock(filename)
 	end
 end
 
+--- Deletes a metadata mapblock file
+-- @param filename filename the filename of the mapblock
 function modgen.delete_metadata(filename)
 	local size = modgen.get_filesize(filename)
 	if size > 0 then
@@ -156,6 +166,8 @@ function modgen.write_metadata(filename, metadata)
 	end
 end
 
+--- Writes the manifest to a file in json format
+-- @param filename the filename to write to
 function modgen.write_manifest(filename)
 	local file = env.io.open(filename,"w")
 	local json = minetest.write_json(modgen.manifest, true)
@@ -164,6 +176,8 @@ function modgen.write_manifest(filename)
 	file:close()
 end
 
+--- Reads a minfest from a json file
+-- @param filename the filename of the manifest
 function modgen.read_manifest(filename)
 	local infile = io.open(filename, "r")
 	if not infile then
@@ -200,6 +214,9 @@ function modgen.get_mapblock_name(prefix, pos, suffix, create_dirs)
 	return xstride_dir .. "/mapblock_" .. pos.y .. "_" .. pos.z .. "." .. suffix
 end
 
+--- copies a files from the source to the target
+-- @param src the source file
+-- @param target the target file
 function modgen.copyfile(src, target)
 	local infile = env.io.open(src, "r")
 	local instr = infile:read("*a")
@@ -219,7 +236,8 @@ function modgen.copyfile(src, target)
 	return #instr
 end
 
-
+--- copies the modgen-import skeleton to the specified patch
+-- @param path the path to use
 function modgen.write_mod_files(path)
 	local basepath = modgen.MOD_PATH .. "/import_mod/"
 	local files = minetest.get_dir_list(basepath, false)

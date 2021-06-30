@@ -7,7 +7,7 @@ function modgen.register_import_mod(manifest, modpath)
     error("modgen and modgen_export versions don't match, try up- or downgrading the modgen mod")
   end
 
-  -- copy manifest file
+  -- copy manifest data
   modgen.manifest = manifest
 
   if modgen.enable_inplace_save then
