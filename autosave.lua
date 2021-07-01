@@ -52,34 +52,22 @@ minetest.register_on_dignode(place_dig_callback)
 
 -- autosave on we commands
 if minetest.get_modpath("worldedit") then
-
-    -- generic worldedit command interceptor function
-    local function worldedit_intercept(function_name, affected_positions_callback)
-        local old_fn = worldedit[function_name]
-
-        worldedit[function_name] = function(...)
-            local pos1, pos2 = affected_positions_callback(...)
-            deferred_export(pos1, pos2)
-            return old_fn(...)
-        end
+    -- used by various primitives and commands
+    local old_mapgenhelper_init = worldedit.manip_helpers.init
+    worldedit.manip_helpers.init = function(pos1, pos2)
+        deferred_export(pos1, pos2)
+        return old_mapgenhelper_init(pos1, pos2)
     end
 
-    -- covers //set //move
-    worldedit_intercept("set", function(pos1, pos2) return pos1, pos2 end)
-    -- covers //fixlight
-    worldedit_intercept("fixlight", function(pos1, pos2) return pos1, pos2 end)
-    -- covers //param2
-    worldedit_intercept("set_param2", function(pos1, pos2) return pos1, pos2 end)
-    -- covers //replace
-    worldedit_intercept("replace", function(pos1, pos2) return pos1, pos2 end)
-    -- covers //load
-    worldedit_intercept("keep_loaded", function(pos1, pos2) return pos1, pos2 end)
-    -- covers //copy //stack
-    worldedit_intercept("copy2", function(pos1, pos2, off)
-        return vector.add(pos1, off), vector.add(pos2, off)
-    end)
+    -- used by //load and others
+    local old_keeploaded = worldedit.keep_loaded
+    worldedit.keep_loaded = function(pos1, pos2)
+        deferred_export(pos1, pos2)
+        return old_keeploaded(pos1, pos2)
+    end
 end
 
+-- intercept various node-based events
 minetest.register_on_mods_loaded(function()
     for nodename, def in pairs(minetest.registered_nodes) do
         if type(def.on_receive_fields) == "function" then
