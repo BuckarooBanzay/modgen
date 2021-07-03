@@ -121,10 +121,10 @@ function modgen.serialize_part(pos)
     -- dirty workaround for https://github.com/minetest/minetest/issues/8943
     if next(meta) and (next(meta.fields) or next(meta.inventory)) then
       data.has_metadata = true
+      data.metadata.meta = data.metadata.meta or {}
+      data.metadata.meta[minetest.pos_to_string(relative_pos)] = meta
     end
 
-    data.metadata.meta = data.metadata.meta or {}
-    data.metadata.meta[minetest.pos_to_string(relative_pos)] = meta
   end
 
   -- serialize node timers
