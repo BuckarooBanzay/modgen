@@ -1,6 +1,7 @@
 globals = {
 	"modgen",
-	"worldedit"
+	"worldedit",
+	"minetest"
 }
 
 read_globals = {
@@ -9,7 +10,6 @@ read_globals = {
 	table = {fields = {"copy", "getn"}},
 
 	-- Minetest
-	"minetest",
 	"vector", "ItemStack",
 	"dump", "dump2",
 	"VoxelArea"

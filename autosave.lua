@@ -42,11 +42,24 @@ local function deferred_export(pos1, pos2)
     end
 end
 
-local function place_dig_callback(pos)
+-- autosave on minetest.set_node
+local old_set_node = minetest.set_node
+function minetest.set_node(pos, node)
     deferred_export(pos, pos)
+    return old_set_node(pos, node)
+end
+
+-- autosave on minetest.swap_node
+local old_swap_node = minetest.swap_node
+function minetest.swap_node(pos, node)
+    deferred_export(pos, pos)
+    return old_swap_node(pos, node)
 end
 
 -- autosave on place/dignode
+local function place_dig_callback(pos)
+    deferred_export(pos, pos)
+end
 minetest.register_on_placenode(place_dig_callback)
 minetest.register_on_dignode(place_dig_callback)
 
