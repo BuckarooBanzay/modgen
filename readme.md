@@ -35,41 +35,6 @@ secure.trusted_mods = modgen
 
 Afterwards if you mark a region and execute `/export` the mapblocks are written to the exported mod itself
 
-# Obfuscating mapblock paths/coordinates
-
-In some scenarios it can be important to obfuscate where mapblocks are generated (to make cheating harder for example).
-The pattern of the mapblock filename can be customized in a depending mod.
-
-An example:
-
-_mod.conf_
-```
-depends = modgen
-```
-
-_init.lua_
-```lua
-function modgen.get_mapblock_name(prefix, pos, suffix, create_dirs)
-  local pos_str = minetest.pos_to_string(pos)
-  -- simply do a "sha1" over the position string
-  -- reconstruction of the coordinate can only be achieved by hash-collision (brute-force)
-  local sha_hash = minetest.sha1(pos_str)
-  return prefix .. "mapblock-" .. sha_hash .. "." .. suffix
-end
-```
-
-The above example will rewrite the mapblock-filenames:
-
-```
-mapblock-0ad55e954876c567f7c5629faa782bc62c5aa800.bin
-mapblock-106de3dc97ac24f9500f53efe8f656f17177e154.bin
-mapblock-1635341941674dee01ac10dd0b663ff2cc8fe598.bin
-mapblock-25dcdb8997491affc4339ebc31536a9602b001c1.bin
-```
-
-In this case the position of the saved mapblocks isn't easily visible.
-This may be helpful in maps where treasures are hidden in remote areas only accessible by teleports.
-
 # Export format
 
 ## manifest.json
