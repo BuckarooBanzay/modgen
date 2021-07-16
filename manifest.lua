@@ -4,9 +4,16 @@
 -- copy environment to local scope
 local env = ...
 
+-- add missing fields to existing manifests
+local function migrate(manifest)
+	manifest.uid = manifest.uid or modgen.create_uuid()
+end
+
 --- Writes the manifest to a file in json format
 -- @param filename the filename to write to
 function modgen.write_manifest(filename)
+	migrate(modgen.manifest)
+
 	local file = env.io.open(filename,"w")
 	local json = minetest.write_json(modgen.manifest, true)
 
@@ -29,5 +36,6 @@ function modgen.read_manifest(filename)
 	if instr then
 		-- use existing manifest
 		modgen.manifest = minetest.parse_json(instr)
+		migrate(modgen.manifest)
 	end
 end

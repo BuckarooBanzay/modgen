@@ -30,6 +30,7 @@ echo "Executing stage2"
 minetestserver --config /minetest.conf
 
 test -d /root/.minetest/worlds/world/modgen_mod_export
+cat /root/.minetest/worlds/world/modgen_mod_export/manifest.json
 
 echo "Cleanup"
 rm -rf /root/.minetest/worlds/world/worldmods/stage2
