@@ -40,6 +40,8 @@
 <ul class="nowrap">
   <li><a href="../modules/export.html">export</a></li>
   <li><strong>functions</strong></li>
+  <li><a href="../modules/manifest.html">manifest</a></li>
+  <li><a href="../modules/mapblock.html">mapblock</a></li>
   <li><a href="../modules/serialize.html">serialize</a></li>
 </ul>
 <h2>Topics</h2>
@@ -71,34 +73,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#modgen.get_filesize">modgen.get_filesize (filename)</a></td>
 	<td class="summary">Returns the filesize of the specified file</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#modgen.delete_mapblock">modgen.delete_mapblock (filename)</a></td>
-	<td class="summary">Deletes a mapblock file</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#modgen.delete_metadata">modgen.delete_metadata (filename)</a></td>
-	<td class="summary">Deletes a metadata mapblock file</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#modgen.write_mapblock">modgen.write_mapblock (filename, node_ids, param1, param2)</a></td>
-	<td class="summary">writes the mapblock data to the specified filename</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#modgen.write_metadata">modgen.write_metadata (filename, metadata)</a></td>
-	<td class="summary">writes the mapblock metadatadata to the specified filename</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#modgen.write_manifest">modgen.write_manifest (filename)</a></td>
-	<td class="summary">Writes the manifest to a file in json format</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#modgen.read_manifest">modgen.read_manifest (filename)</a></td>
-	<td class="summary">Reads a minfest from a json file</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#modgen.get_mapblock_name">modgen.get_mapblock_name (prefix, pos, suffix, create_dirs)</a></td>
-	<td class="summary">returns the mapblock filename</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#modgen.copyfile">modgen.copyfile (src, target)</a></td>
@@ -193,182 +167,6 @@
 
 </dd>
     <dt>
-    <a name = "modgen.delete_mapblock"></a>
-    <strong>modgen.delete_mapblock (filename)</strong>
-    </dt>
-    <dd>
-    Deletes a mapblock file
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">filename</span>
-         filename the filename of the mapblock
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "modgen.delete_metadata"></a>
-    <strong>modgen.delete_metadata (filename)</strong>
-    </dt>
-    <dd>
-    Deletes a metadata mapblock file
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">filename</span>
-         filename the filename of the mapblock
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "modgen.write_mapblock"></a>
-    <strong>modgen.write_mapblock (filename, node_ids, param1, param2)</strong>
-    </dt>
-    <dd>
-    writes the mapblock data to the specified filename
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">filename</span>
-         the filename to use
-        </li>
-        <li><span class="parameter">node_ids</span>
-         the nodeid data as table
-        </li>
-        <li><span class="parameter">param1</span>
-         the param1 data as table
-        </li>
-        <li><span class="parameter">param2</span>
-         the param2 data as table
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        the bytes written to disk
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "modgen.write_metadata"></a>
-    <strong>modgen.write_metadata (filename, metadata)</strong>
-    </dt>
-    <dd>
-    writes the mapblock metadatadata to the specified filename
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">filename</span>
-         the filename to use
-        </li>
-        <li><span class="parameter">metadata</span>
-         the metadata as table
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        the bytes written to disk
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "modgen.write_manifest"></a>
-    <strong>modgen.write_manifest (filename)</strong>
-    </dt>
-    <dd>
-    Writes the manifest to a file in json format
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">filename</span>
-         the filename to write to
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "modgen.read_manifest"></a>
-    <strong>modgen.read_manifest (filename)</strong>
-    </dt>
-    <dd>
-    Reads a minfest from a json file
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">filename</span>
-         the filename of the manifest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "modgen.get_mapblock_name"></a>
-    <strong>modgen.get_mapblock_name (prefix, pos, suffix, create_dirs)</strong>
-    </dt>
-    <dd>
-    returns the mapblock filename
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">prefix</span>
-         the directory or file-prefix to use
-        </li>
-        <li><span class="parameter">pos</span>
-         the mapblock position as vector
-        </li>
-        <li><span class="parameter">suffix</span>
-         the filename suffix to use
-        </li>
-        <li><span class="parameter">create_dirs</span>
-         create intermediate directories or not (read-only)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        the resulting filename
-    </ol>
-
-
-
-
-</dd>
-    <dt>
     <a name = "modgen.copyfile"></a>
     <strong>modgen.copyfile (src, target)</strong>
     </dt>
@@ -418,7 +216,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2021-07-16 18:33:54 </i>
+<i style="float:right;">Last updated 2021-07-16 18:48:52 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
