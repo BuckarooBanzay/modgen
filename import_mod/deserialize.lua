@@ -28,7 +28,7 @@ return function(data, mapblock_pos)
   manip:set_data(node_data)
   manip:set_light_data(param1)
   manip:set_param2_data(param2)
-  manip:write_to_map()
+  manip:write_to_map(false)
 
   -- deserialize metadata
   if data.metadata and data.metadata.meta then
