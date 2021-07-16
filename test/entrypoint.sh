@@ -30,3 +30,19 @@ echo "Executing stage2"
 minetestserver --config /minetest.conf
 
 test -d /root/.minetest/worlds/world/modgen_mod_export
+
+echo "Cleanup"
+rm -rf /root/.minetest/worlds/world/worldmods/stage2
+
+echo "Preparing stage3: import"
+cp -R /stages/stage3 /root/.minetest/worlds/world/worldmods/stage3
+mv /root/.minetest/worlds/world/modgen_mod_export /root/.minetest/worlds/world/worldmods
+
+cat << EOF > /minetest.conf
+default_game = minetest_game
+mg_name = singlenode
+enable_integration_test = true
+EOF
+
+echo "Executing stage3"
+minetestserver --config /minetest.conf
