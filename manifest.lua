@@ -12,7 +12,10 @@ end
 --- Writes the manifest to a file in json format
 -- @param filename the filename to write to
 function modgen.write_manifest(filename)
+	-- migrate before exporting
 	migrate(modgen.manifest)
+	-- set mtime
+	modgen.manifest.mtime = os.time()
 
 	local file = env.io.open(filename,"w")
 	local json = minetest.write_json(modgen.manifest, true)
@@ -36,6 +39,7 @@ function modgen.read_manifest(filename)
 	if instr then
 		-- use existing manifest
 		modgen.manifest = minetest.parse_json(instr)
+		-- migrate on import
 		migrate(modgen.manifest)
 	end
 end
