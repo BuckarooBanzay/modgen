@@ -17,6 +17,12 @@ local function worker(ctx)
 		if ctx.verbose then
 			minetest.chat_send_player(ctx.playername, "[modgen] Export done with " .. ctx.bytes .. " bytes")
 		end
+		if ctx.callback then
+			-- execute optional callback
+			ctx.callback({
+				bytes = ctx.bytes
+			})
+		end
 		return
 	end
 
@@ -69,7 +75,8 @@ end
 -- @param pos2 the second position of the export region
 -- @param fast if true: export a mapblock every server-step
 -- @param verbose if true: report detailed stats while exporting
-function modgen.export(name, pos1, pos2, fast, verbose)
+-- @param callback[opt] optional callback function on completion
+function modgen.export(name, pos1, pos2, fast, verbose, callback)
 	-- get mapblock edges
 	local min = modgen.get_mapblock_bounds(pos1)
 	local _, max = modgen.get_mapblock_bounds(pos2)
@@ -100,7 +107,8 @@ function modgen.export(name, pos1, pos2, fast, verbose)
 		delay = delay,
 		verbose = verbose,
 		-- bytes written to disk
-		bytes = 0
+		bytes = 0,
+		callback = callback
 	}
 
 	if not modgen.enable_inplace_save then

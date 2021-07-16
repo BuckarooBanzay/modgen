@@ -68,7 +68,6 @@ dofile(MP.."/commands/stats.lua")
 dofile(MP.."/commands/export.lua")
 dofile(MP.."/commands/autosave.lua")
 dofile(MP.."/commands/pos.lua")
-dofile(MP.."/test.lua")
 
 -- try to read existing manifest in worldpath
 modgen.read_manifest(modgen.export_path .. "/manifest.json")
