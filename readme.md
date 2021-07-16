@@ -130,6 +130,17 @@ Metadata and nodetimers are saved as compressed (`deflate` algorithm) json-file 
 
 ```
 
+# Testing
+
+Requirements:
+* Docker
+* docker-compose
+
+Usage:
+```bash
+docker-compose -f docker-compose.test.yml up --build sut
+```
+
 # License
 
 MIT
