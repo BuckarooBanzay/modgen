@@ -22,35 +22,11 @@ local function read_compressed(filename)
 end
 
 local function read_mapblock_data(mapblock)
-  local nodedata = read_compressed(get_mapblock_name(MP .. "/map/", mapblock, "bin"))
-
-  if nodedata then
-    -- get optional metadata
-    local metadata = read_compressed(get_mapblock_name(MP .. "/map/", mapblock, "meta.bin"))
-
-    local result = {
-      node_ids = {},
-      param1 = {},
-      param2 = {},
-      metadata = minetest.parse_json(metadata or "{}")
-    }
-
-    for i=1,4096 do
-      -- 1, 3, 5 ... 8191
-      local node_id_offset = (i * 2) - 1
-      local node_id = (string.byte(nodedata, node_id_offset) * 256) +
-        string.byte(nodedata, node_id_offset+1) - 32768
-
-      local param1 = string.byte(nodedata, (4096 * 2) + i)
-      local param2 = string.byte(nodedata, (4096 * 3) + i)
-
-      table.insert(result.node_ids, node_id)
-      table.insert(result.param1, param1)
-      table.insert(result.param2, param2)
-    end
-
-    return result
+  local json = read_compressed(get_mapblock_name(MP .. "/map/", mapblock, "bin"))
+  if not json then
+    return
   end
+  return minetest.parse_json(json)
 end
 
 return function(manifest)

@@ -40,26 +40,14 @@ local function worker(ctx)
 	if data.only_air then
 		-- remove mapblock if it exists
 		modgen.delete_mapblock(mapblock_filename)
-		modgen.delete_metadata(mapblock_meta_filename)
 		minetest.after(ctx.delay, worker, ctx)
 
 	else
 		-- write mapblock to disk
 		local count = modgen.write_mapblock(
 			mapblock_filename,
-			data.node_ids, data.param1, data.param2
+			data.node_ids, data.param1, data.param2, data.metadata
 		)
-
-		-- write metadata if available
-		if data.has_metadata then
-			count = count + modgen.write_metadata(
-				mapblock_meta_filename,
-				data.metadata
-			)
-		else
-			-- remove metadata if it exists
-			modgen.delete_metadata(mapblock_meta_filename)
-		end
 
 		-- increment byte count
 		ctx.bytes = ctx.bytes + count

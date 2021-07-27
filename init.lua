@@ -1,7 +1,7 @@
 local MP = minetest.get_modpath("modgen")
 local storage = minetest.get_mod_storage()
 
-local VERSION = 2
+local VERSION = 3
 
 -- mod namespace
 modgen = {
