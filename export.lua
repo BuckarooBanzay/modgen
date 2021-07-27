@@ -27,7 +27,7 @@ local function worker(ctx)
 	end
 
 	local mapblock_pos = modgen.get_mapblock(ctx.current_pos)
-	local data = modgen.serialize_part(ctx.current_pos)
+	local mapblock_data = modgen.serialize_part(ctx.current_pos)
 
 	if ctx.verbose then
 		minetest.chat_send_player(ctx.playername, "[modgen] Export mapblock: " .. minetest.pos_to_string(mapblock_pos) ..
@@ -35,19 +35,15 @@ local function worker(ctx)
 	end
 
 	local mapblock_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock_pos, "bin", true)
-	local mapblock_meta_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock_pos, "meta.bin", true)
 
-	if data.only_air then
+	if mapblock_data.only_air then
 		-- remove mapblock if it exists
 		modgen.delete_mapblock(mapblock_filename)
 		minetest.after(ctx.delay, worker, ctx)
 
 	else
 		-- write mapblock to disk
-		local count = modgen.write_mapblock(
-			mapblock_filename,
-			data.node_ids, data.param1, data.param2, data.metadata
-		)
+		local count = modgen.write_mapblock(mapblock_filename, mapblock_data)
 
 		-- increment byte count
 		ctx.bytes = ctx.bytes + count

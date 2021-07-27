@@ -27,21 +27,16 @@ end
 -- @param param2 the param2 data as table
 -- @param metadata the metadata as table
 -- @return the bytes written to disk
-function modgen.write_mapblock(filename, node_ids, param1, param2, metadata)
+function modgen.write_mapblock(filename, mapblock_data)
 	local previous_size = modgen.get_filesize(filename)
 
 	local file = env.io.open(filename,"wb")
 
-	assert(#node_ids == 4096) -- entire mapblock
-	assert(#node_ids == #param1)
-	assert(#node_ids == #param2)
+	assert(#mapblock_data.node_ids == 4096) -- entire mapblock
+	assert(#mapblock_data.node_ids == #mapblock_data.param1)
+	assert(#mapblock_data.node_ids == #mapblock_data.param2)
 
-	local data = minetest.write_json({
-		node_ids = node_ids,
-		param1 = param1,
-		param2 = param2,
-		metadata = metadata
-	})
+	local data = minetest.write_json(mapblock_data)
 
 	local compressed_data = minetest.compress(data, "deflate")
 	local new_size = #compressed_data

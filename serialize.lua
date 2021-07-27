@@ -145,7 +145,11 @@ function modgen.serialize_part(pos)
         }
       end
     end
+  end
 
+  if not data.has_metadata then
+    -- clear metadata field
+    data.metadata = nil
   end
 
   return data
