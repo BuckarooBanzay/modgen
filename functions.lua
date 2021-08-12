@@ -19,6 +19,15 @@ function modgen.sort_pos(pos1, pos2)
 	return pos1, pos2
 end
 
+--- returns the chunk position from a node position
+-- @param pos the node-position
+-- @return the chunk position
+function modgen.get_chunkpos(pos)
+	local mapblock_pos = modgen.get_mapblock(pos)
+	local aligned_mapblock_pos = vector.add(mapblock_pos, 2)
+	return vector.floor( vector.divide(aligned_mapblock_pos, 5) )
+end
+
 --- calculates the mapblock position from a node position
 -- @param pos the node-position
 -- @return the mapblock position
@@ -29,6 +38,12 @@ end
 function modgen.get_mapblock_bounds(pos)
 	local mapblock = modgen.get_mapblock(pos)
 	return modgen.get_mapblock_bounds_from_mapblock(mapblock)
+end
+
+function modgen.get_mapblock_bounds_from_chunk(chunk_pos)
+	local min = vector.subtract( vector.multiply(chunk_pos, 5), 2)
+	local max = vector.add(min, 4)
+	return min, max
 end
 
 

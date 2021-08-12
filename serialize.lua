@@ -51,7 +51,8 @@ function modgen.serialize_part(pos)
     param2 = {},
     metadata = {},
     has_metadata = false,
-    only_air = true
+    only_air = true,
+    pos = pos
   }
 
   -- loop over all blocks and fill cid,param1 and param2
