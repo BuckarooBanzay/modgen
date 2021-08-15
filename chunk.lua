@@ -43,14 +43,15 @@ function modgen.create_chunk_data(mapblocks)
         return
     end
 
-    local data = string.char(#mapblocks)
+    local data = {}
+    table.insert(data, string.char(#mapblocks))
 
     -- node_ids
     print("node_ids")
     for _, mapblock in ipairs(mapblocks) do
         local node_ids = mapblock.node_ids
         for i=1,#node_ids do
-            data = data .. modgen.int_to_bytes(node_ids[i])
+            table.insert(data, modgen.int_to_bytes(node_ids[i]))
         end
     end
 
@@ -59,7 +60,7 @@ function modgen.create_chunk_data(mapblocks)
     for _, mapblock in ipairs(mapblocks) do
         local param1 = mapblock.param1
         for i=1,#param1 do
-            data = data .. string.char(param1[i])
+            table.insert(data, string.char(param1[i]))
         end
     end
 
@@ -68,7 +69,7 @@ function modgen.create_chunk_data(mapblocks)
     for _, mapblock in ipairs(mapblocks) do
         local param2 = mapblock.param2
         for i=1,#param2 do
-            data = data .. string.char(param2[i])
+            table.insert(data, string.char(param2[i]))
         end
     end
 
@@ -77,8 +78,15 @@ function modgen.create_chunk_data(mapblocks)
 
     print("chunk manifest")
     local json = minetest.write_json(chunk_manifest)
-    data = data .. json
+    table.insert(data, json)
 
     print("compress")
-    return minetest.compress(data, "deflate")
+    return minetest.compress(table.concat(data), "deflate")
 end
+
+
+minetest.register_chatcommand("test_chunk", {
+    func = function()
+        modgen.export_chunk({x=0,y=0,z=0})
+    end
+})
