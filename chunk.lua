@@ -2,7 +2,7 @@
 local env = ...
 
 
-function modgen.export_chunk(chunk_pos)
+function modgen.export_chunk(chunk_pos, filename)
     local min_mapblock, max_mapblock = modgen.get_mapblock_bounds_from_chunk(chunk_pos)
     local mapblocks = {}
     for z=min_mapblock.z,max_mapblock.z do
@@ -10,7 +10,6 @@ function modgen.export_chunk(chunk_pos)
             for y=min_mapblock.y,max_mapblock.y do
                 local mapblock_pos = {x=x, y=y, z=z}
                 local pos = modgen.get_mapblock_bounds_from_mapblock(mapblock_pos)
-                print("Serializing mapblock: " .. minetest.pos_to_string(mapblock_pos))
                 local mapblock = modgen.serialize_part(pos)
                 if not mapblock.only_air then
                     table.insert(mapblocks, mapblock)
@@ -19,17 +18,22 @@ function modgen.export_chunk(chunk_pos)
         end
     end
 
-    print("Creating chunk data")
     local data = modgen.create_chunk_data(mapblocks)
-    print("Created chunk data with " .. #data .. " bytes")
-    local filename = modgen.export_path .. "/map/chunk_" ..
-        chunk_pos.x .. "_" .. chunk_pos.y .. "_" .. chunk_pos.z .. ".bin"
-    print("Writing chunk data")
+    if not data then
+        -- no data
+        return 0
+    end
+
     modgen.write_chunk_data(data, filename)
+    return #data
 end
 
 function modgen.write_chunk_data(data, filename)
+    print("write_chunk_data " .. filename .. " " .. #data .. " bytes")
     local file = env.io.open(filename,"wb")
+    if not file then
+        error("could not open file: " .. filename)
+    end
 	file:write(data)
 	if file and file:close() then
 		return
@@ -47,7 +51,6 @@ function modgen.create_chunk_data(mapblocks)
     table.insert(data, string.char(#mapblocks))
 
     -- node_ids
-    print("node_ids")
     for _, mapblock in ipairs(mapblocks) do
         local node_ids = mapblock.node_ids
         for i=1,#node_ids do
@@ -56,7 +59,6 @@ function modgen.create_chunk_data(mapblocks)
     end
 
     -- param1
-    print("param1")
     for _, mapblock in ipairs(mapblocks) do
         local param1 = mapblock.param1
         for i=1,#param1 do
@@ -65,7 +67,6 @@ function modgen.create_chunk_data(mapblocks)
     end
 
     -- param2
-    print("param2")
     for _, mapblock in ipairs(mapblocks) do
         local param2 = mapblock.param2
         for i=1,#param2 do
@@ -73,20 +74,26 @@ function modgen.create_chunk_data(mapblocks)
         end
     end
 
-    local chunk_manifest = {}
-    -- TODO
+    local chunk_manifest = {
+        -- mapblock metadata and absolute positions
+        mapblocks = {}
+    }
 
-    print("chunk manifest")
+    for _, mapblock in ipairs(mapblocks) do
+        local mapblock_manifest = {
+            pos = mapblock.pos,
+        }
+
+        if mapblock.has_metadata then
+            -- add metadata
+            mapblock_manifest.metadata = mapblock.metadata
+        end
+
+        table.insert(chunk_manifest.mapblocks, mapblock_manifest)
+    end
+
     local json = minetest.write_json(chunk_manifest)
     table.insert(data, json)
 
-    print("compress")
     return minetest.compress(table.concat(data), "deflate")
 end
-
-
-minetest.register_chatcommand("test_chunk", {
-    func = function()
-        modgen.export_chunk({x=0,y=0,z=0})
-    end
-})

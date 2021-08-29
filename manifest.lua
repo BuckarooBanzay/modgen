@@ -4,21 +4,17 @@
 -- copy environment to local scope
 local env = ...
 
--- add missing fields to existing manifests
-local function migrate(manifest)
-	manifest.uid = manifest.uid or modgen.create_uuid()
-end
-
 --- Writes the manifest to a file in json format
 -- @param filename the filename to write to
-function modgen.write_manifest(filename)
+function modgen.write_manifest(manifest, filename)
 	-- migrate before exporting
-	migrate(modgen.manifest)
+	manifest.uid = manifest.uid or modgen.create_uuid()
+
 	-- set mtime
-	modgen.manifest.mtime = os.time()
+	manifest.mtime = os.time()
 
 	local file = env.io.open(filename,"w")
-	local json = minetest.write_json(modgen.manifest, true)
+	local json = minetest.write_json(manifest, true)
 
 	file:write(json)
 	file:close()
@@ -39,7 +35,5 @@ function modgen.read_manifest(filename)
 	if instr then
 		-- use existing manifest
 		modgen.manifest = minetest.parse_json(instr)
-		-- migrate on import
-		migrate(modgen.manifest)
 	end
 end

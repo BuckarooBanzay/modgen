@@ -8,7 +8,7 @@ modgen = {
   pos1 = {},
   pos2 = {},
   MOD_PATH = MP,
-  PART_LENGTH = 16,
+  CHUNK_LENGTH = 80,
 
   -- current version
   version = VERSION,
@@ -26,8 +26,7 @@ modgen = {
   manifest = {
     -- stats
     size = 0,
-    mapblock_count = 0,
-    metadata_count = 0,
+    chunks = 0,
 
     -- exported name to nodeid mapping
     node_mapping = {},
@@ -58,10 +57,9 @@ end
 -- pass on global env (secure/insecure)
 loadfile(MP.."/functions.lua")(global_env)
 loadfile(MP.."/manifest.lua")(global_env)
-loadfile(MP.."/mapblock.lua")(global_env)
+loadfile(MP.."/chunk.lua")(global_env)
 
 dofile(MP.."/markers.lua")
-dofile(MP.."/chunk.lua")
 dofile(MP.."/register.lua")
 dofile(MP.."/serialize.lua")
 dofile(MP.."/iterator_next.lua")

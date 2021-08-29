@@ -25,6 +25,7 @@ local external_node_id_mapping = {}
 -- @return the serialized mapblock as table
 function modgen.serialize_part(pos)
   local pos1, pos2 = modgen.get_mapblock_bounds(pos)
+	local mapblock_pos = modgen.get_mapblock(pos)
 
   assert((pos2.x - pos1.x) == 15)
   assert((pos2.y - pos1.y) == 15)
@@ -52,7 +53,7 @@ function modgen.serialize_part(pos)
     metadata = {},
     has_metadata = false,
     only_air = true,
-    pos = pos
+    pos = mapblock_pos
   }
 
   -- loop over all blocks and fill cid,param1 and param2

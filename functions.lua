@@ -28,6 +28,22 @@ function modgen.get_chunkpos(pos)
 	return vector.floor( vector.divide(aligned_mapblock_pos, 5) )
 end
 
+--- returns the lower and upper chunk bounds for the given position
+-- @param pos the node-position
+function modgen.get_chunk_bounds(pos)
+	local chunk_pos = modgen.get_chunkpos(pos)
+	local mapblock_min, mapblock_max = modgen.get_mapblock_bounds_from_chunk(chunk_pos)
+	local min = modgen.get_mapblock_bounds(mapblock_min)
+	local _, max = modgen.get_mapblock_bounds(mapblock_max)
+	return min, max
+end
+
+function modgen.get_chunk_bounds_from_mapblock(mapblock)
+	local min = vector.multiply(mapblock, 16)
+	local max = vector.add(min, 15)
+	return min, max
+end
+
 --- calculates the mapblock position from a node position
 -- @param pos the node-position
 -- @return the mapblock position
@@ -51,6 +67,21 @@ function modgen.get_mapblock_bounds_from_mapblock(mapblock)
 	local min = vector.multiply(mapblock, 16)
 	local max = vector.add(min, 15)
 	return min, max
+end
+
+function modgen.get_chunk_filename(chunk_pos, create_dirs)
+	local map_dir = modgen.export_path .. "/map"
+
+	if create_dirs then
+		minetest.mkdir(map_dir)
+	end
+
+	return map_dir .. "/chunk_" ..
+		chunk_pos.x .. "_" .. chunk_pos.y .. "_" .. chunk_pos.z .. ".bin"
+end
+
+function modgen.remove_chunk(chunk_pos)
+	env.os.remove(modgen.get_chunk_filename(chunk_pos))
 end
 
 --- Converts an integer number to two bytes
