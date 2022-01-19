@@ -6,5 +6,9 @@ services:
   user: root
   volumes:
     - "./:/root/.minetest/worlds/world/worldmods/modgen/"
+    - "world:/root/.minetest/worlds/world"
   ports:
     - "30000:30000/udp"
+
+volumes:
+  world: {}
