@@ -9,8 +9,7 @@ function modgen.export_chunk(chunk_pos, filename)
         for x=min_mapblock.x,max_mapblock.x do
             for y=min_mapblock.y,max_mapblock.y do
                 local mapblock_pos = {x=x, y=y, z=z}
-                local pos = modgen.get_mapblock_bounds_from_mapblock(mapblock_pos)
-                local mapblock = modgen.serialize_part(pos)
+                local mapblock = modgen.serialize_mapblock(mapblock_pos)
                 if not mapblock.only_air then
                     table.insert(mapblocks, mapblock)
                 end
