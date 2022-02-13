@@ -62,7 +62,7 @@ function modgen.create_chunk_data(mapblocks)
     for _, mapblock in ipairs(mapblocks) do
         local node_ids = mapblock.node_ids
         for i=1,#node_ids do
-            table.insert(data, modgen.int_to_bytes(node_ids[i]))
+            table.insert(data, modgen.encode_uint16(node_ids[i]))
         end
     end
 

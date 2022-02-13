@@ -4,6 +4,14 @@
 -- copy environment to local scope
 local env = ...
 
+------
+-- Mapblock position
+-- @field x the x position in mapblocks
+-- @field y the y position in mapblocks
+-- @field z the z position in mapblocks
+-- @table mapblock_pos
+
+
 function modgen.sort_pos(pos1, pos2)
 	pos1 = {x=pos1.x, y=pos1.y, z=pos1.z}
 	pos2 = {x=pos2.x, y=pos2.y, z=pos2.z}
@@ -38,15 +46,19 @@ function modgen.get_chunk_bounds(pos)
 	return min, max
 end
 
-function modgen.get_chunk_bounds_from_mapblock(mapblock)
-	local min = vector.multiply(mapblock, 16)
+--- returns the chunk_bounds from a mapblock-position
+-- @param mapblock_pos @{mapblock_pos}
+-- @return the lower node-position
+-- @return the upper node-position
+function modgen.get_chunk_bounds_from_mapblock(mapblock_pos)
+	local min = vector.multiply(mapblock_pos, 16)
 	local max = vector.add(min, 15)
 	return min, max
 end
 
 --- calculates the mapblock position from a node position
 -- @param pos the node-position
--- @return the mapblock position
+-- @return @{mapblock_pos} the mapblock position
 function modgen.get_mapblock(pos)
 	return vector.floor( vector.divide(pos, 16))
 end
@@ -82,16 +94,6 @@ end
 
 function modgen.remove_chunk(chunk_pos)
 	env.os.remove(modgen.get_chunk_filename(chunk_pos))
-end
-
---- Converts an integer number to two bytes
--- @param i the integer number
--- @return a table with to bytes/chars
-function modgen.int_to_bytes(i)
-	local x =i + 32768
-	local h = math.floor(x/256) % 256;
-	local l = math.floor(x % 256);
-	return(string.char(h, l));
 end
 
 --- Creates a unique identifier
