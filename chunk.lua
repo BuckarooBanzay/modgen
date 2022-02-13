@@ -1,6 +1,15 @@
+--- chunk functions
+--
+-- Chunk on-disk format:
+--
+-- * uint8: # of stored mapblocks
+-- * uint8[4096 * #mapblocks]: node-ids
+-- * uint8[4096 * #mapblocks]: param1
+-- * uint8[4096 * #mapblocks]: param2
+-- * uint8[...]: chunk manifest in json format
+
 -- copy environment to local scope
 local env = ...
-
 
 function modgen.export_chunk(chunk_pos, filename)
     local min_mapblock, max_mapblock = modgen.get_mapblock_bounds_from_chunk(chunk_pos)
