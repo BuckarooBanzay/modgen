@@ -8,7 +8,7 @@ local env = ...
 -- @param filename the filename to write to
 function modgen.write_manifest(manifest, filename)
 	-- migrate before exporting
-	manifest.uid = manifest.uid or modgen.create_uuid()
+	manifest.uid = manifest.uid or math.random(1000*1000)
 
 	-- set mtime
 	manifest.mtime = os.time()

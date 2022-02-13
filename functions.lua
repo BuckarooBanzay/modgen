@@ -96,17 +96,6 @@ function modgen.remove_chunk(chunk_pos)
 	env.os.remove(modgen.get_chunk_filename(chunk_pos))
 end
 
---- Creates a unique identifier
--- see: https://gist.github.com/jrus/3197011
--- @return the uuid
-function modgen.create_uuid()
-    local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-    return string.gsub(template, '[xy]', function (c)
-        local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
-        return string.format('%x', v)
-    end)
-end
-
 --- Returns the filesize of the specified file
 -- @param filename the filename
 -- @return the size in bytes or 0 if not found
