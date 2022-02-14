@@ -109,12 +109,6 @@ function modgen.export(name, pos1, pos2, fast, verbose, callback)
 		micros = 0
 	}
 
-	-- create directories if not in insecure env
-	if not modgen.insecure_environment then
-		minetest.mkdir(ctx.schemapath)
-		minetest.mkdir(ctx.schemapath .. "/map")
-	end
-
 	-- initial call to worker
 	worker(ctx)
 end
