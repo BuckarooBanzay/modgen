@@ -55,10 +55,10 @@ local function load_chunk(chunk_pos, manifest)
     for i=1,4096 do
       local node_id_offset = 1 + ((mbi-1) * 4096 * 2) + (i * 2) - 2
       local node_id = decode_uint16(chunk_data, node_id_offset)
-      local param1 = string.byte(chunk_data, 1 + (4096 * 2 * mapblock_count) + ((mbi-1) * 4096) + i - 1)
-      local param2 = string.byte(chunk_data, 1 + (4096 * 3 * mapblock_count) + ((mbi-1) * 4096) + i - 1)
+      local param1 = string.byte(chunk_data, 1 + (4096 * 2 * mapblock_count) + ((mbi-1) * 4096) + i)
+      local param2 = string.byte(chunk_data, 1 + (4096 * 3 * mapblock_count) + ((mbi-1) * 4096) + i)
 
-      assert(param1 <= minetest.LIGHT_MAX, "max light exceeded @ mapblock: " .. mbi .. " pos: " .. i .. " value: " .. param1)
+      assert(param1 <= 15, "max light exceeded @ mapblock: " .. mbi .. " pos: " .. i .. " value: " .. param1)
 
       table.insert(mapblock.node_ids, node_id)
       table.insert(mapblock.param1, param1)
