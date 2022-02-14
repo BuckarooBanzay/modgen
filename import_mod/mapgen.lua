@@ -44,10 +44,12 @@ local function load_chunk(chunk_pos, manifest)
   local chunk_manifest = minetest.parse_json(string.sub(chunk_data, manifest_offset))
 
   for mbi=1, mapblock_count do
+    local mapblock_manifest = chunk_manifest.mapblocks[mbi]
     local mapblock = {
       node_ids = {},
       param1 = {},
-      param2 = {}
+      param2 = {},
+      metadata = mapblock_manifest.metadata
     }
 
     for i=1,4096 do
@@ -62,7 +64,7 @@ local function load_chunk(chunk_pos, manifest)
     end
 
     localize_nodeids(manifest.node_mapping, mapblock.node_ids)
-    deserialize(mapblock, chunk_manifest.mapblocks[mbi].pos)
+    deserialize(mapblock, mapblock_manifest.pos)
 end
 end
 
