@@ -57,6 +57,14 @@ Json file that serves as an index to look up content-id's:
 
 Mapblocks are exported in chunks with the following path-structure: `${export-mod}/map/chunk_${x}_${y}_${z}.bin`
 
+## versions
+
+Major versions with breaking changes:
+
+* Version `1`: Initial release
+* Version `2`: Reordered export axes from `z-x-y` to `z-x-y` (30% size decrease)
+* Version `3`: Export whole chunks (50% size decrease)
+
 # Testing
 
 Requirements:
