@@ -59,7 +59,6 @@ loadfile(MP.."/functions.lua")(global_env)
 loadfile(MP.."/manifest.lua")(global_env)
 loadfile(MP.."/chunk.lua")(global_env)
 
-dofile(MP.."/binary.lua")
 dofile(MP.."/markers.lua")
 dofile(MP.."/register.lua")
 dofile(MP.."/serialize.lua")

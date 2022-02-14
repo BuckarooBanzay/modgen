@@ -50,6 +50,11 @@ function modgen.write_chunk_data(data, filename)
 	end
 end
 
+local function encode_uint16(int)
+    local a, b = int % 0x100, int / 0x100
+    return string.char(a, b)
+end
+
 function modgen.create_chunk_data(mapblocks)
     if #mapblocks == 0 then
         return
@@ -62,7 +67,7 @@ function modgen.create_chunk_data(mapblocks)
     for _, mapblock in ipairs(mapblocks) do
         local node_ids = mapblock.node_ids
         for i=1,#node_ids do
-            table.insert(data, modgen.encode_uint16(node_ids[i]))
+            table.insert(data, encode_uint16(node_ids[i]))
         end
     end
 
