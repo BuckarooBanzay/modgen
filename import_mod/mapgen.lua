@@ -34,13 +34,11 @@ end
 
 local function load_chunk(chunk_pos, manifest)
   local filename = get_chunk_name(MP .. "/map/", chunk_pos)
-  local chunk_data, compressed_size = read_compressed(filename)
+  local chunk_data = read_compressed(filename)
   if not chunk_data then
     return
   end
-  print("loaded chunk: " .. minetest.pos_to_string(chunk_pos) .. " with " .. compressed_size .. "/" .. #chunk_data .. " bytes")
   local mapblock_count = string.byte(chunk_data, 1)
-  print("mapblock-count: " .. mapblock_count)
 
   local manifest_offset = 1 + 1 + (4096 * 4 * mapblock_count)
   local chunk_manifest = minetest.parse_json(string.sub(chunk_data, manifest_offset))
@@ -58,8 +56,6 @@ local function load_chunk(chunk_pos, manifest)
       local param1 = string.byte(chunk_data, 1 + (4096 * 2 * mapblock_count) + ((mbi-1) * 4096) + i)
       local param2 = string.byte(chunk_data, 1 + (4096 * 3 * mapblock_count) + ((mbi-1) * 4096) + i)
 
-      assert(param1 <= 15, "max light exceeded @ mapblock: " .. mbi .. " pos: " .. i .. " value: " .. param1)
-
       table.insert(mapblock.node_ids, node_id)
       table.insert(mapblock.param1, param1)
       table.insert(mapblock.param2, param2)
@@ -70,65 +66,8 @@ local function load_chunk(chunk_pos, manifest)
 end
 end
 
-local function read_mapblock_data(mapblock)
-  local nodedata = read_compressed(get_mapblock_name(MP .. "/map/", mapblock, "bin"))
-
-  if nodedata then
-    -- get optional metadata
-    local metadata = read_compressed(get_mapblock_name(MP .. "/map/", mapblock, "meta.bin"))
-
-    local result = {
-      node_ids = {},
-      param1 = {},
-      param2 = {},
-      metadata = minetest.parse_json(metadata or "{}")
-    }
-
-    for i=1,4096 do
-      -- 1, 3, 5 ... 8191
-      local node_id_offset = (i * 2) - 1
-      local node_id = (string.byte(nodedata, node_id_offset) * 256) +
-        string.byte(nodedata, node_id_offset+1) - 32768
-
-      local param1 = string.byte(nodedata, (4096 * 2) + i)
-      local param2 = string.byte(nodedata, (4096 * 3) + i)
-
-      table.insert(result.node_ids, node_id)
-      table.insert(result.param1, param1)
-      table.insert(result.param2, param2)
-    end
-
-    return result
-  end
-end
-
 return function(manifest)
   minetest.register_on_generated(function(minp)
-    local chunk_pos = get_chunkpos(minp)
-    load_chunk(chunk_pos, manifest)
-    --[[
-
-    local min_mapblock = get_mapblock_pos(minp)
-    local max_mapblock = get_mapblock_pos(maxp)
-
-    for x = min_mapblock.x, max_mapblock.x do
-      for y = min_mapblock.y, max_mapblock.y do
-        for z = min_mapblock.z, max_mapblock.z do
-          local mapblock = { x=x, y=y, z=z }
-
-          -- get data if available
-          local data = read_mapblock_data(mapblock)
-          if data then
-            -- localize node-ids
-            localize_nodeids(manifest.node_mapping, data.node_ids)
-
-            -- deserialize to map
-            deserialize(data, mapblock)
-          end
-        end
-      end
-    end
-    --]]
+    load_chunk(get_chunkpos(minp), manifest)
   end)
-
 end
