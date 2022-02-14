@@ -81,13 +81,8 @@ function modgen.get_mapblock_bounds_from_mapblock(mapblock)
 	return min, max
 end
 
-function modgen.get_chunk_filename(chunk_pos, create_dirs)
+function modgen.get_chunk_filename(chunk_pos)
 	local map_dir = modgen.export_path .. "/map"
-
-	if create_dirs then
-		minetest.mkdir(map_dir)
-	end
-
 	return map_dir .. "/chunk_" ..
 		chunk_pos.x .. "_" .. chunk_pos.y .. "_" .. chunk_pos.z .. ".bin"
 end

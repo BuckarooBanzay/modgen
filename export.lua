@@ -27,7 +27,7 @@ local function worker(ctx)
 		return
 	end
 
-	local filename = modgen.get_chunk_filename(ctx.current_pos, true)
+	local filename = modgen.get_chunk_filename(ctx.current_pos)
 
 	local existing_filesize = modgen.get_filesize(filename)
 	local count = modgen.export_chunk(ctx.current_pos, filename)
