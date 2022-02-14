@@ -1,14 +1,14 @@
 local MP = minetest.get_modpath("modgen")
 local storage = minetest.get_mod_storage()
 
-local VERSION = 2
+local VERSION = 3
 
 -- mod namespace
 modgen = {
   pos1 = {},
   pos2 = {},
   MOD_PATH = MP,
-  PART_LENGTH = 16,
+  CHUNK_LENGTH = 80,
 
   -- current version
   version = VERSION,
@@ -26,8 +26,7 @@ modgen = {
   manifest = {
     -- stats
     size = 0,
-    mapblock_count = 0,
-    metadata_count = 0,
+    chunks = 0,
 
     -- exported name to nodeid mapping
     node_mapping = {},
@@ -41,6 +40,10 @@ modgen = {
   -- enables saving mapblocks in-place
   enable_inplace_save = false
 }
+
+-- create export directories
+minetest.mkdir(modgen.export_path)
+minetest.mkdir(modgen.export_path .. "/map")
 
 -- secure/insecure environment
 local global_env = _G
@@ -58,8 +61,8 @@ end
 -- pass on global env (secure/insecure)
 loadfile(MP.."/functions.lua")(global_env)
 loadfile(MP.."/manifest.lua")(global_env)
-loadfile(MP.."/mapblock.lua")(global_env)
 
+dofile(MP.."/chunk.lua")
 dofile(MP.."/markers.lua")
 dofile(MP.."/register.lua")
 dofile(MP.."/serialize.lua")

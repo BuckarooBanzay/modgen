@@ -1,7 +1,23 @@
 ---------
 -- serialization functions
 
+------
+-- Metadata
+-- @field meta
+-- @field meta.fields
+-- @field timers
+-- @table metadata
 
+------
+-- Mapblock data
+-- @field node_ids table of 4096 node-ids
+-- @field param1 table of 4096 param1/light values
+-- @field param2 table of 4096 param2 values
+-- @field metadata @{metadata}
+-- @field has_metadata
+-- @field only_air
+-- @field pos @{functions.mapblock_pos}
+-- @table mapblock_data
 
 -- collect nodes with on_timer attributes
 local node_names_with_timer = {}
@@ -22,9 +38,9 @@ local external_node_id_mapping = {}
 
 --- Serializes the mapblock at the given position
 -- @param pos the node-position
--- @return the serialized mapblock as table
-function modgen.serialize_part(pos)
-  local pos1, pos2 = modgen.get_mapblock_bounds(pos)
+-- @return @{mapblock_data}
+function modgen.serialize_mapblock(mapblock_pos)
+  local pos1, pos2 = modgen.get_mapblock_bounds_from_mapblock(mapblock_pos)
 
   assert((pos2.x - pos1.x) == 15)
   assert((pos2.y - pos1.y) == 15)
@@ -51,7 +67,8 @@ function modgen.serialize_part(pos)
     param2 = {},
     metadata = {},
     has_metadata = false,
-    only_air = true
+    only_air = true,
+    pos = mapblock_pos
   }
 
   -- loop over all blocks and fill cid,param1 and param2

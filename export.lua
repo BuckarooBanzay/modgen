@@ -11,61 +11,58 @@ local function worker(ctx)
 	ctx.progress_percent = math.floor(ctx.current_part / ctx.total_parts * 100 * 10) / 10
 
 	if not ctx.current_pos then
-		-- done, write manifest, config and lua code files
-		modgen.write_manifest(ctx.schemapath .. "/manifest.json")
+		-- done, write manifest and lua code files
+		modgen.manifest.size = modgen.manifest.size + ctx.bytes
+		modgen.write_manifest(modgen.manifest, ctx.schemapath .. "/manifest.json")
 		modgen.write_mod_files(ctx.schemapath)
+		local millis = tonumber(ctx.micros / 1000)
+
 		if ctx.verbose then
-			minetest.chat_send_player(ctx.playername, "[modgen] Export done with " .. ctx.bytes .. " bytes")
+			minetest.chat_send_player(
+				ctx.playername,
+				"[modgen] Export done with " .. ctx.bytes .. " bytes in " .. millis .. " ms"
+			)
 		end
 		if ctx.callback then
 			-- execute optional callback
 			ctx.callback({
-				bytes = ctx.bytes
+				bytes = ctx.bytes,
+				millis = millis
 			})
 		end
 		return
 	end
 
-	local mapblock_pos = modgen.get_mapblock(ctx.current_pos)
-	local data = modgen.serialize_part(ctx.current_pos)
+	local filename = modgen.get_chunk_filename(ctx.current_pos)
+	local existing_filesize = modgen.get_filesize(filename)
 
-	if ctx.verbose then
-		minetest.chat_send_player(ctx.playername, "[modgen] Export mapblock: " .. minetest.pos_to_string(mapblock_pos) ..
-		" Progress: " .. ctx.progress_percent .. "% (" .. ctx.current_part .. "/" .. ctx.total_parts .. ")")
-	end
+	local t_start = minetest.get_us_time()
+	local count = modgen.export_chunk(ctx.current_pos, filename)
+	local t_delta = minetest.get_us_time() - t_start
+	-- increment time usage
+	ctx.micros = ctx.micros + t_delta
 
-	local mapblock_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock_pos, "bin", true)
-	local mapblock_meta_filename = modgen.get_mapblock_name(ctx.schemapath .. "/map/", mapblock_pos, "meta.bin", true)
+	if existing_filesize > 0 and count == 0 then
+		-- chunk removed
+		modgen.remove_chunk(ctx.current_pos)
 
-	if data.only_air then
-		-- remove mapblock if it exists
-		modgen.delete_mapblock(mapblock_filename)
-		modgen.delete_metadata(mapblock_meta_filename)
-		minetest.after(ctx.delay, worker, ctx)
-
-	else
-		-- write mapblock to disk
-		local count = modgen.write_mapblock(
-			mapblock_filename,
-			data.node_ids, data.param1, data.param2
-		)
-
-		-- write metadata if available
-		if data.has_metadata then
-			count = count + modgen.write_metadata(
-				mapblock_meta_filename,
-				data.metadata
-			)
-		else
-			-- remove metadata if it exists
-			modgen.delete_metadata(mapblock_meta_filename)
-		end
+		-- decrement byte and chunk count
+		ctx.bytes = ctx.bytes - existing_filesize
+		modgen.manifest.chunks = modgen.manifest.chunks + 1
+	elseif existing_filesize == 0 and count > 0 then
+		-- new chunk
+		modgen.manifest.chunks = modgen.manifest.chunks + 1
 
 		-- increment byte count
 		ctx.bytes = ctx.bytes + count
-		minetest.after(ctx.delay, worker, ctx)
+	else
+		-- contents modified
+		-- apply delta file size
+		ctx.bytes = ctx.bytes + count - existing_filesize
 	end
 
+
+	minetest.after(ctx.delay, worker, ctx)
 end
 
 
@@ -73,21 +70,22 @@ end
 -- @param name the playername to report infos to
 -- @param pos1 the first position of the export region
 -- @param pos2 the second position of the export region
--- @param fast if true: export a mapblock every server-step
+-- @param fast if true: export a chunk every server-step
 -- @param verbose if true: report detailed stats while exporting
 -- @param callback[opt] optional callback function on completion
 function modgen.export(name, pos1, pos2, fast, verbose, callback)
-	-- get mapblock edges
-	local min = modgen.get_mapblock_bounds(pos1)
-	local _, max = modgen.get_mapblock_bounds(pos2)
+	-- get chunk edges
+	pos1, pos2 = modgen.sort_pos(pos1, pos2)
+	local min = modgen.get_chunkpos(pos1)
+	local max = modgen.get_chunkpos(pos2)
 
-	local size_mapblocks = {
-		x = math.ceil(math.abs(min.x - max.x) / modgen.PART_LENGTH),
-		y = math.ceil(math.abs(min.y - max.y) / modgen.PART_LENGTH),
-		z = math.ceil(math.abs(min.z - max.z) / modgen.PART_LENGTH)
+	local size_chunks = {
+		x = math.ceil(math.abs(min.x - max.x) / modgen.CHUNK_LENGTH),
+		y = math.ceil(math.abs(min.y - max.y) / modgen.CHUNK_LENGTH),
+		z = math.ceil(math.abs(min.z - max.z) / modgen.CHUNK_LENGTH)
 	}
 
-	local total_parts = size_mapblocks.x * size_mapblocks.y * size_mapblocks.z
+	local total_parts = size_chunks.x * size_chunks.y * size_chunks.z
 	local delay = 0.1
 
 	if fast then
@@ -99,7 +97,6 @@ function modgen.export(name, pos1, pos2, fast, verbose, callback)
 		current_pos = nil,
 		pos1 = min,
 		pos2 = max,
-		size_mapblocks = size_mapblocks,
 		total_parts = total_parts,
 		schemapath = modgen.export_path,
 		playername = name,
@@ -108,14 +105,9 @@ function modgen.export(name, pos1, pos2, fast, verbose, callback)
 		verbose = verbose,
 		-- bytes written to disk
 		bytes = 0,
-		callback = callback
+		callback = callback,
+		micros = 0
 	}
-
-	if not modgen.enable_inplace_save then
-		-- create directories if not saving in-place
-		minetest.mkdir(ctx.schemapath)
-		minetest.mkdir(ctx.schemapath .. "/map")
-	end
 
 	-- initial call to worker
 	worker(ctx)
