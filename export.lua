@@ -15,22 +15,32 @@ local function worker(ctx)
 		modgen.manifest.size = modgen.manifest.size + ctx.bytes
 		modgen.write_manifest(modgen.manifest, ctx.schemapath .. "/manifest.json")
 		modgen.write_mod_files(ctx.schemapath)
+		local millis = tonumber(ctx.micros / 1000)
+
 		if ctx.verbose then
-			minetest.chat_send_player(ctx.playername, "[modgen] Export done with " .. ctx.bytes .. " bytes")
+			minetest.chat_send_player(
+				ctx.playername,
+				"[modgen] Export done with " .. ctx.bytes .. " bytes in " .. millis .. " ms"
+			)
 		end
 		if ctx.callback then
 			-- execute optional callback
 			ctx.callback({
-				bytes = ctx.bytes
+				bytes = ctx.bytes,
+				millis = millis
 			})
 		end
 		return
 	end
 
 	local filename = modgen.get_chunk_filename(ctx.current_pos)
-
 	local existing_filesize = modgen.get_filesize(filename)
+
+	local t_start = minetest.get_us_time()
 	local count = modgen.export_chunk(ctx.current_pos, filename)
+	local t_delta = minetest.get_us_time() - t_start
+	-- increment time usage
+	ctx.micros = ctx.micros + t_delta
 
 	if existing_filesize > 0 and count == 0 then
 		-- chunk removed
@@ -95,7 +105,8 @@ function modgen.export(name, pos1, pos2, fast, verbose, callback)
 		verbose = verbose,
 		-- bytes written to disk
 		bytes = 0,
-		callback = callback
+		callback = callback,
+		micros = 0
 	}
 
 	if not modgen.enable_inplace_save then

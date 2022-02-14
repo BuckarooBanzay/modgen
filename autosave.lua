@@ -11,11 +11,13 @@ local function worker()
         local chunk_pos = minetest.get_position_from_hash(hash)
         local mapblock_pos = modgen.get_mapblock_bounds_from_chunk(chunk_pos)
         local min = modgen.get_mapblock_bounds_from_mapblock(mapblock_pos)
-        modgen.export("singleplayer", min, min, true, false)
+        modgen.export("singleplayer", min, min, true, false, function(stats)
+            minetest.chat_send_all("[modgen] Changed " .. stats.bytes .. " bytes in " .. stats.millis .. " ms")
+        end)
     end
 
     if count > 0 then
-        minetest.chat_send_all("Dispatched " .. count .. " chunk(s) to export")
+        minetest.chat_send_all("[modgen] Dispatched " .. count .. " chunk(s) to export")
     end
     chunks = {}
     minetest.after(2, worker)
