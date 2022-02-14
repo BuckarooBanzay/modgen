@@ -33,8 +33,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#manifest_json">manifest.json </a></li>
-<li><a href="#mapblocks">mapblocks </a></li>
-<li><a href="#metadata___nodetimers">metadata / nodetimers </a></li>
+<li><a href="#chunks">chunks </a></li>
 </ul>
 
 
@@ -45,11 +44,11 @@
 <h2>Modules</h2>
 <ul class="nowrap">
   <li><a href="../modules/autosave.html">autosave</a></li>
+  <li><a href="../modules/chunk.html">chunk</a></li>
   <li><a href="../modules/export.html">export</a></li>
   <li><a href="../modules/functions.html">functions</a></li>
   <li><a href="../modules/import_mod.html">import_mod</a></li>
   <li><a href="../modules/manifest.html">manifest</a></li>
-  <li><a href="../modules/mapblock.html">mapblock</a></li>
   <li><a href="../modules/serialize.html">serialize</a></li>
 </ul>
 
@@ -79,7 +78,7 @@
 <ul>
     <li><code>/pos1</code>, <code>/pos2</code> Set opposite corners of the export map</li>
     <li><code>/export [fast]</code> Exports the map as a standalone mod into <code>${worldfolder}/modgen_mod_export</code></li>
-    <li><code>/modgen_stats</code> Returns some stats about the exported mapblocks and size</li>
+    <li><code>/modgen_stats</code> Returns some stats about the exported chunks and size</li>
     <li><code>/autosave [on|off]</code> enables autosave feature (<strong>warning</strong>: may not work on some worldedit commands)</li>
 </ul>
 
@@ -94,7 +93,7 @@ if the <code>modgen</code> mod is also present (optional).</p>
 </code></pre>
 
 
-<p>Afterwards if you mark a region and execute <code>/export</code> the mapblocks are written to the exported mod itself</p>
+<p>Afterwards if you mark a region and execute <code>/export</code> the chunks are written to the exported mod itself</p>
 
 <h1>Export format</h1>
 
@@ -117,87 +116,10 @@ if the <code>modgen</code> mod is also present (optional).</p>
 </pre>
 
 
-<p><a name="mapblocks"></a></p>
-<h2>mapblocks</h2>
+<p><a name="chunks"></a></p>
+<h2>chunks</h2>
 
-<p>Mapblocks are saved in <code>${modfolder}/map/{x}/mapblock_{y}_{z}.bin</code>
-<strong>Hint</strong>: x/y/z are the coordinates in mapblocks</p>
-
-<p>The mapdata is saved and compressed with <code>deflate</code></p>
-
-<ul>
-    <li>4096*2 Bytes: Node-ids for the mapblock in z/x/y order as integer MSB first</li>
-    <li>4096 Bytes: Param1 data</li>
-    <li>4096 Bytes: Param2 data</li>
-</ul>
-
-<p><a name="metadata___nodetimers"></a></p>
-<h2>metadata / nodetimers</h2>
-
-<p>Metadata and nodetimers are saved as compressed (<code>deflate</code> algorithm) json-file in <code>${modfolder}/map/{x}/mapblock_{y}_{z}.meta.bin</code></p>
-
-
-<pre>
-{
-  <span class="string">"meta"</span>: {
-    <span class="string">"(1,3,14)"</span>: {
-      <span class="string">"fields"</span>: {
-        <span class="string">"configured"</span>: <span class="string">"1"</span>,
-        <span class="string">"key"</span>: <span class="string">"Level 1 Access"</span>
-      },
-      <span class="string">"inventory"</span>: null
-    },
-    <span class="string">"(11,3,14)"</span>: {
-      <span class="string">"fields"</span>: {
-        <span class="string">"configured"</span>: <span class="string">"1"</span>,
-        <span class="string">"key"</span>: <span class="string">"Biolab Access"</span>
-      },
-      <span class="string">"inventory"</span>: null
-    },
-    <span class="string">"(13,7,10)"</span>: {
-      <span class="string">"fields"</span>: {
-        <span class="string">"gain"</span>: <span class="string">"2"</span>,
-        <span class="string">"hear_distance"</span>: <span class="string">"32"</span>,
-        <span class="string">"interval_max"</span>: <span class="string">"20"</span>,
-        <span class="string">"interval_min"</span>: <span class="string">"20"</span>,
-        <span class="string">"randomize_position"</span>: <span class="string">"0"</span>,
-        <span class="string">"selected_sound_key"</span>: <span class="string">"soundblock_scifi_ambient_3"</span>,
-        <span class="string">"state"</span>: <span class="string">"on"</span>
-      },
-      <span class="string">"inventory"</span>: null
-    },
-    <span class="string">"(8,7,10)"</span>: {
-      <span class="string">"fields"</span>: {
-        <span class="string">"formspec"</span>: <span class="string">"size[8,9]list[current_name;main;0,0.3;8,4;]list[current_player;main;0,4.85;8,1;]list[current_player;main;0,6.08;8,3;8]listring[current_name;main]listring[current_player;main]image[0,4.85;1,1;gui_hb_bg.png]image[1,4.85;1,1;gui_hb_bg.png]image[2,4.85;1,1;gui_hb_bg.png]image[3,4.85;1,1;gui_hb_bg.png]image[4,4.85;1,1;gui_hb_bg.png]image[5,4.85;1,1;gui_hb_bg.png]image[6,4.85;1,1;gui_hb_bg.png]image[7,4.85;1,1;gui_hb_bg.png]"</span>,
-        <span class="string">"infotext"</span>: <span class="string">"Box"</span>
-      },
-      <span class="string">"inventory"</span>: {
-        <span class="string">"main"</span>: [
-          <span class="string">""</span>
-        ]
-      }
-    },
-    <span class="string">"(9,8,10)"</span>: {
-      <span class="string">"fields"</span>: {
-        <span class="string">"formspec"</span>: <span class="string">"size[8,9]list[current_name;main;0,0.3;8,4;]list[current_player;main;0,4.85;8,1;]list[current_player;main;0,6.08;8,3;8]listring[current_name;main]listring[current_player;main]image[0,4.85;1,1;gui_hb_bg.png]image[1,4.85;1,1;gui_hb_bg.png]image[2,4.85;1,1;gui_hb_bg.png]image[3,4.85;1,1;gui_hb_bg.png]image[4,4.85;1,1;gui_hb_bg.png]image[5,4.85;1,1;gui_hb_bg.png]image[6,4.85;1,1;gui_hb_bg.png]image[7,4.85;1,1;gui_hb_bg.png]"</span>,
-        <span class="string">"infotext"</span>: <span class="string">"Box"</span>
-      },
-      <span class="string">"inventory"</span>: {
-        <span class="string">"main"</span>: [
-          <span class="string">""</span>
-        ]
-      }
-    }
-  },
-  <span class="string">"timers"</span>: {
-    <span class="string">"(13,7,10)"</span>: {
-      <span class="string">"elapsed"</span>: <span class="number">5.200000286102295</span>,
-      <span class="string">"timeout"</span>: <span class="number">20</span>
-    }
-  }
-}
-</pre>
-
+<p>Mapblocks are exported in chunks with the following path-structure: <code>${export-mod}/map/chunk_${x}_${y}_${z}.bin</code></p>
 
 <h1>Testing</h1>
 
@@ -220,7 +142,7 @@ docker-compose -f docker-compose.test.yml up <span class="comment">--build sut</
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2022-01-24 07:56:16 </i>
+<i style="float:right;">Last updated 2022-02-14 16:48:19 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

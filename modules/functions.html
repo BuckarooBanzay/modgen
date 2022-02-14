@@ -33,17 +33,18 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul class="nowrap">
   <li><a href="../modules/autosave.html">autosave</a></li>
+  <li><a href="../modules/chunk.html">chunk</a></li>
   <li><a href="../modules/export.html">export</a></li>
   <li><strong>functions</strong></li>
   <li><a href="../modules/import_mod.html">import_mod</a></li>
   <li><a href="../modules/manifest.html">manifest</a></li>
-  <li><a href="../modules/mapblock.html">mapblock</a></li>
   <li><a href="../modules/serialize.html">serialize</a></li>
 </ul>
 <h2>Topics</h2>
@@ -65,17 +66,20 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
+	<td class="name" nowrap><a href="#modgen.get_chunkpos">modgen.get_chunkpos (pos)</a></td>
+	<td class="summary">returns the chunk position from a node position</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modgen.get_chunk_bounds">modgen.get_chunk_bounds (pos)</a></td>
+	<td class="summary">returns the lower and upper chunk bounds for the given position</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modgen.get_chunk_bounds_from_mapblock">modgen.get_chunk_bounds_from_mapblock (mapblock_pos)</a></td>
+	<td class="summary">returns the chunk_bounds from a mapblock-position</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#modgen.get_mapblock">modgen.get_mapblock (pos)</a></td>
 	<td class="summary">calculates the mapblock position from a node position</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#modgen.int_to_bytes">modgen.int_to_bytes (i)</a></td>
-	<td class="summary">Converts an integer number to two bytes</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#modgen.create_uuid">modgen.create_uuid ()</a></td>
-	<td class="summary">Creates a unique identifier
- see: https://gist.github.com/jrus/3197011</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#modgen.get_filesize">modgen.get_filesize (filename)</a></td>
@@ -90,6 +94,13 @@
 	<td class="summary">copies the modgen-import skeleton to the specified patch</td>
 	</tr>
 </table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#mapblock_pos">mapblock_pos</a></td>
+	<td class="summary">Mapblock position</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
@@ -98,6 +109,78 @@
     <h2 class="section-header "><a name="Functions"></a>Functions</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "modgen.get_chunkpos"></a>
+    <strong>modgen.get_chunkpos (pos)</strong>
+    </dt>
+    <dd>
+    returns the chunk position from a node position
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pos</span>
+         the node-position
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the chunk position
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modgen.get_chunk_bounds"></a>
+    <strong>modgen.get_chunk_bounds (pos)</strong>
+    </dt>
+    <dd>
+    returns the lower and upper chunk bounds for the given position
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pos</span>
+         the node-position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modgen.get_chunk_bounds_from_mapblock"></a>
+    <strong>modgen.get_chunk_bounds_from_mapblock (mapblock_pos)</strong>
+    </dt>
+    <dd>
+    returns the chunk_bounds from a mapblock-position
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">mapblock_pos</span>
+         <a href="../modules/functions.html#mapblock_pos">mapblock_pos</a>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        the lower node-position</li>
+        <li>
+        the upper node-position</li>
+    </ol>
+
+
+
+
+</dd>
     <dt>
     <a name = "modgen.get_mapblock"></a>
     <strong>modgen.get_mapblock (pos)</strong>
@@ -116,52 +199,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        the mapblock position
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "modgen.int_to_bytes"></a>
-    <strong>modgen.int_to_bytes (i)</strong>
-    </dt>
-    <dd>
-    Converts an integer number to two bytes
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">i</span>
-         the integer number
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        a table with to bytes/chars
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "modgen.create_uuid"></a>
-    <strong>modgen.create_uuid ()</strong>
-    </dt>
-    <dd>
-    Creates a unique identifier
- see: https://gist.github.com/jrus/3197011
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-        the uuid
+        <a href="../modules/functions.html#mapblock_pos">mapblock_pos</a> the mapblock position
     </ol>
 
 
@@ -237,13 +275,43 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "mapblock_pos"></a>
+    <strong>mapblock_pos</strong>
+    </dt>
+    <dd>
+    Mapblock position
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         the x position in mapblocks
+        </li>
+        <li><span class="parameter">y</span>
+         the y position in mapblocks
+        </li>
+        <li><span class="parameter">z</span>
+         the z position in mapblocks
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2022-01-24 07:56:16 </i>
+<i style="float:right;">Last updated 2022-02-14 16:48:19 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

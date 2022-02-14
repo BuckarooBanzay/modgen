@@ -34,8 +34,8 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
-  <li><strong>autosave</strong></li>
-  <li><a href="../modules/chunk.html">chunk</a></li>
+  <li><a href="../modules/autosave.html">autosave</a></li>
+  <li><strong>chunk</strong></li>
   <li><a href="../modules/export.html">export</a></li>
   <li><a href="../modules/functions.html">functions</a></li>
   <li><a href="../modules/import_mod.html">import_mod</a></li>
@@ -51,11 +51,18 @@
 
 <div id="content">
 
-<h1>Module <code>autosave</code></h1>
-<p>marks a region as changed, to be used by dependent mods whose changes don't get caught
- by the usual change-detection</p>
+<h1>Module <code>chunk</code></h1>
+<p>chunk functions</p>
 <p>
+<p> Chunk on-disk format:</p>
 
+<ul>
+    <li>uint8: # of stored mapblocks</li>
+    <li>uint8[4096 * #mapblocks]: node-ids</li>
+    <li>uint8[4096 * #mapblocks]: param1</li>
+    <li>uint8[4096 * #mapblocks]: param2</li>
+    <li>uint8[...]: chunk manifest in json format</li>
+</ul>
 </p>
 
 
