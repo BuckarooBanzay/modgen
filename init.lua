@@ -38,7 +38,10 @@ modgen = {
   },
 
   -- enables saving mapblocks in-place
-  enable_inplace_save = false
+  enable_inplace_save = false,
+
+  -- true if we save directly to the export-mod
+  insecure_environment = false
 }
 
 -- secure/insecure environment
@@ -52,6 +55,7 @@ if ie then
 
   -- enable in-place saving
   modgen.enable_inplace_save = true
+  modgen.insecure_environment = true
 end
 
 -- pass on global env (secure/insecure)
