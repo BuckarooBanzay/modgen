@@ -47,9 +47,8 @@ local function worker(ctx)
 		ctx.bytes = ctx.bytes + count
 	else
 		-- contents modified
-
-		-- increment byte count
-		ctx.bytes = ctx.bytes + count
+		-- apply delta file size
+		ctx.bytes = ctx.bytes + count - existing_filesize
 	end
 
 

@@ -8,9 +8,6 @@
 -- * uint8[4096 * #mapblocks]: param2
 -- * uint8[...]: chunk manifest in json format
 
--- copy environment to local scope
-local env = ...
-
 function modgen.export_chunk(chunk_pos, filename)
     local min_mapblock, max_mapblock = modgen.get_mapblock_bounds_from_chunk(chunk_pos)
     local mapblocks = {}
@@ -32,22 +29,8 @@ function modgen.export_chunk(chunk_pos, filename)
         return 0
     end
 
-    modgen.write_chunk_data(data, filename)
+    modgen.write_chunk(data, filename)
     return #data
-end
-
-function modgen.write_chunk_data(data, filename)
-    print("write_chunk_data " .. filename .. " " .. #data .. " bytes")
-    local file = env.io.open(filename,"wb")
-    if not file then
-        error("could not open file: " .. filename)
-    end
-	file:write(data)
-	if file and file:close() then
-		return
-	else
-		error("write to '" .. filename .. "' failed!")
-	end
 end
 
 local function encode_uint16(int)

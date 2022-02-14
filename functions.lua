@@ -87,6 +87,19 @@ function modgen.get_chunk_filename(chunk_pos)
 		chunk_pos.x .. "_" .. chunk_pos.y .. "_" .. chunk_pos.z .. ".bin"
 end
 
+function modgen.write_chunk(data, filename)
+    local file = env.io.open(filename,"wb")
+    if not file then
+        error("could not open file: " .. filename)
+    end
+	file:write(data)
+	if file and file:close() then
+		return
+	else
+		error("write to '" .. filename .. "' failed!")
+	end
+end
+
 function modgen.remove_chunk(chunk_pos)
 	env.os.remove(modgen.get_chunk_filename(chunk_pos))
 end
