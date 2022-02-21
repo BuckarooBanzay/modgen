@@ -48,7 +48,7 @@ minetest.mkdir(modgen.export_path .. "/map")
 -- secure/insecure environment
 local global_env = _G
 
-local ie = minetest.request_insecure_environment()
+local ie = minetest.request_insecure_environment and minetest.request_insecure_environment()
 if ie then
   print("[modgen] using insecure environment")
   -- register insecure environment
@@ -62,6 +62,7 @@ end
 loadfile(MP.."/functions.lua")(global_env)
 loadfile(MP.."/manifest.lua")(global_env)
 
+dofile(MP.."/hud.lua")
 dofile(MP.."/chunk.lua")
 dofile(MP.."/markers.lua")
 dofile(MP.."/register.lua")
