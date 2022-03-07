@@ -48,7 +48,7 @@ local function worker(ctx)
 
 		-- decrement byte and chunk count
 		ctx.bytes = ctx.bytes - existing_filesize
-		modgen.manifest.chunks = modgen.manifest.chunks + 1
+		modgen.manifest.chunks = modgen.manifest.chunks - 1
 	elseif existing_filesize == 0 and count > 0 then
 		-- new chunk
 		modgen.manifest.chunks = modgen.manifest.chunks + 1
