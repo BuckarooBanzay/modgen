@@ -34,6 +34,11 @@ function modgen.mark_changed(pos1, pos2)
         return
     end
 
+    if not pos2 then
+        -- default to same pos2 as pos1
+        pos2 = pos1
+    end
+
     pos1, pos2 = modgen.sort_pos(pos1, pos2)
 
     local chunk_pos1 = modgen.get_chunkpos(pos1)
@@ -52,20 +57,20 @@ end
 -- autosave on minetest.set_node
 local old_set_node = minetest.set_node
 function minetest.set_node(pos, node)
-    modgen.mark_changed(pos, pos)
+    modgen.mark_changed(pos)
     return old_set_node(pos, node)
 end
 
 -- autosave on minetest.swap_node
 local old_swap_node = minetest.swap_node
 function minetest.swap_node(pos, node)
-    modgen.mark_changed(pos, pos)
+    modgen.mark_changed(pos)
     return old_swap_node(pos, node)
 end
 
 -- autosave on place/dignode
 local function place_dig_callback(pos)
-    modgen.mark_changed(pos, pos)
+    modgen.mark_changed(pos)
 end
 minetest.register_on_placenode(place_dig_callback)
 minetest.register_on_dignode(place_dig_callback)
@@ -95,7 +100,7 @@ minetest.register_on_mods_loaded(function()
             local old_on_receive_fields = def.on_receive_fields
             minetest.override_item(nodename, {
                 on_receive_fields = function(pos, formname, fields, sender)
-                    modgen.mark_changed(pos, pos)
+                    modgen.mark_changed(pos)
                     return old_on_receive_fields(pos, formname, fields, sender)
                 end
             })
@@ -106,7 +111,7 @@ minetest.register_on_mods_loaded(function()
             local old_inv_move = def.on_metadata_inventory_move
             minetest.override_item(nodename, {
                 on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
-                    modgen.mark_changed(pos, pos)
+                    modgen.mark_changed(pos)
                     return old_inv_move(pos, from_list, from_index, to_list, to_index, count, player)
                 end
             })
@@ -117,7 +122,7 @@ minetest.register_on_mods_loaded(function()
             local old_inv_put = def.on_metadata_inventory_put
             minetest.override_item(nodename, {
                 on_metadata_inventory_put = function(pos, listname, index, stack, player)
-                    modgen.mark_changed(pos, pos)
+                    modgen.mark_changed(pos)
                     return old_inv_put(pos, listname, index, stack, player)
                 end
             })
@@ -128,7 +133,7 @@ minetest.register_on_mods_loaded(function()
             local old_inv_take = def.on_metadata_inventory_take
             minetest.override_item(nodename, {
                 on_metadata_inventory_take = function(pos, listname, index, stack, player)
-                    modgen.mark_changed(pos, pos)
+                    modgen.mark_changed(pos)
                     return old_inv_take(pos, listname, index, stack, player)
                 end
             })
@@ -136,3 +141,29 @@ minetest.register_on_mods_loaded(function()
 
     end
 end)
+
+if minetest.get_modpath("screwdriver2") and minetest.registered_items["screwdriver2:screwdriver"] then
+    local old_nodedef = minetest.registered_items["screwdriver2:screwdriver"]
+    local old_on_use = old_nodedef.on_use
+    local old_on_place = old_nodedef.on_place
+
+    local function handle_pointed_thing(pointed_thing)
+        if pointed_thing.above then
+            modgen.mark_changed(pointed_thing.above)
+        end
+        if pointed_thing.under then
+            modgen.mark_changed(pointed_thing.under)
+        end
+    end
+
+    minetest.override_item("screwdriver2:screwdriver", {
+        on_use = function(itemstack, player, pointed_thing)
+            handle_pointed_thing(pointed_thing)
+            return old_on_use(itemstack, player, pointed_thing)
+        end,
+        on_place = function(itemstack, player, pointed_thing)
+            handle_pointed_thing(pointed_thing)
+            return old_on_place(itemstack, player, pointed_thing)
+        end
+    })
+end
