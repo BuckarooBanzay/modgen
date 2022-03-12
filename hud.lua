@@ -1,70 +1,80 @@
 
-local debug_enabled_players = {}
+-- player => { name => id }
 local hud_data = {}
 
-minetest.register_chatcommand("modgen_debug", {
-	func = function(name, param)
-		local player = minetest.get_player_by_name(name)
-		if not player then
-			return false, "player not found"
-		end
+local hud_position = { x = 0.1, y = 0.9 }
 
-        if param == "on" then
-            debug_enabled_players[name] = true
-            return true, "Debug enabled"
-        else
-            debug_enabled_players[name] = false
-            return true, "Debug disabled"
-        end
-	end
-})
-
-local function setup_hud(player, name)
+local function setup_hud(player)
     local data = {}
-    hud_data[name] = data
-    data.debug_txt = player:hud_add({
-        hud_elem_type = "text",
-        position = { x=0.5, y=0.5 },
-        alignment = { x=1, y=0 },
-        text = "Initializing..."
+
+    data.img = player:hud_add({
+        hud_elem_type = "image",
+        position = hud_position,
+        text = "modgen_loaded.png",
+        offset = {x = 0,   y = 0},
+        alignment = { x = -1, y = 0},
+        scale = {x = 2, y = 2}
     })
+
+    data.text = player:hud_add({
+        hud_elem_type = "text",
+        position = hud_position,
+        number = 0x00ff00,
+        text = "",
+        offset = {x = 0,   y = -16},
+        alignment = { x = 1, y = 0},
+        scale = {x = 2, y = 2}
+    })
+
+    data.text2 = player:hud_add({
+        hud_elem_type = "text",
+        position = hud_position,
+        number = 0x00ff00,
+        text = "",
+        offset = {x = 0,   y = 16},
+        alignment = { x = 1, y = 0},
+        scale = {x = 2, y = 2}
+    })
+
+    hud_data[player:get_player_name()] = data
 end
 
-local function remove_hud(player, name)
-    local data = hud_data[name]
-    if data then
-        player:hud_remove(data.debug_txt)
+local function update_player_hud(player)
+
+    local playername = player:get_player_name()
+    local data = hud_data[playername]
+    if not data then
+        return
     end
-    hud_data[name] = nil
+
+    local txt = "Modgen: "
+
+    if modgen.autosave then
+        txt = txt .. "autosave enabled"
+        player:hud_change(data.img, "text", "modgen_autosave.png")
+    else
+        txt = txt .. "saving"
+        player:hud_change(data.img, "text", "modgen_loaded.png")
+    end
+
+    txt = txt .. " @ '" .. modgen.export_path .. "'"
+    local txt2 = "size: " .. modgen.pretty_size(modgen.manifest.size) .. ", chunks: " .. modgen.manifest.chunks
+
+    player:hud_change(data.text, "text", txt)
+    player:hud_change(data.text2, "text", txt2)
 end
 
-local function update_hud(player, data)
-    local pos = player:get_pos()
+-- init
 
-    local mapblock_pos = modgen.get_mapblock(pos)
-    local chunk_pos = modgen.get_chunkpos(pos)
-
-    player:hud_change(data.debug_txt, "text", dump({
-        chunk_pos = chunk_pos,
-        mapblock_pos = mapblock_pos
-    }))
-end
-
-local function debug_worker()
+local function update_hud()
     for _, player in ipairs(minetest.get_connected_players()) do
-        local name = player:get_player_name()
-
-        if debug_enabled_players[name] and not hud_data[name] then
-            setup_hud(player, name)
-        elseif debug_enabled_players[name] and hud_data[name] then
-            update_hud(player, hud_data[name])
-        elseif not debug_enabled_players[name] and hud_data[name] then
-            remove_hud(player, name)
-        end
+        update_player_hud(player)
     end
-
-    minetest.after(1, debug_worker)
+    minetest.after(1, update_hud)
 end
+minetest.after(1, update_hud)
 
-minetest.register_on_leaveplayer(remove_hud)
-minetest.after(1, debug_worker)
+minetest.register_on_joinplayer(function(player)
+    setup_hud(player)
+    update_player_hud(player)
+end)

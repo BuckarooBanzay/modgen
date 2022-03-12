@@ -63,6 +63,7 @@ loadfile(MP.."/functions.lua")(global_env)
 loadfile(MP.."/manifest.lua")(global_env)
 
 dofile(MP.."/hud.lua")
+dofile(MP.."/debug.lua")
 dofile(MP.."/chunk.lua")
 dofile(MP.."/markers.lua")
 dofile(MP.."/register.lua")

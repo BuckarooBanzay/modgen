@@ -79,4 +79,5 @@ docker-compose -f docker-compose.test.yml up --build sut
 
 # License
 
-MIT
+* Code: MIT
+* Textures: CC-BY-SA 3.0 (http://www.small-icons.com/packs/16x16-free-application-icons.htm)

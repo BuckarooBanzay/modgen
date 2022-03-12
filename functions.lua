@@ -149,3 +149,21 @@ function modgen.write_mod_files(path)
 		modgen.copyfile(basepath .. filename, path .. "/" .. filename)
 	end
 end
+
+
+local ranges = {
+    { size=1000*1000, suffix="MB" },
+    { size=1000, suffix="kB" }
+}
+
+--- returns a formatted size as string
+-- @param bytes the size in bytes
+-- @return the formatted string
+function modgen.pretty_size(bytes)
+    for _, range in ipairs(ranges) do
+        if bytes > range.size then
+            return (math.floor(bytes / range.size * 100) / 100) .. " " .. range.suffix
+        end
+    end
+    return bytes .. " bytes"
+end
