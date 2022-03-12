@@ -21,7 +21,7 @@ local function setup_hud(player)
         position = hud_position,
         number = 0x00ff00,
         text = "",
-        offset = {x = 0,   y = -16},
+        offset = {x = 0,   y = -8},
         alignment = { x = 1, y = 0},
         scale = {x = 2, y = 2}
     })
@@ -31,7 +31,7 @@ local function setup_hud(player)
         position = hud_position,
         number = 0x00ff00,
         text = "",
-        offset = {x = 0,   y = 16},
+        offset = {x = 0,   y = 8},
         alignment = { x = 1, y = 0},
         scale = {x = 2, y = 2}
     })
@@ -58,7 +58,9 @@ local function update_player_hud(player)
     end
 
     txt = txt .. " @ '" .. modgen.export_path .. "'"
-    local txt2 = "size: " .. modgen.pretty_size(modgen.manifest.size) .. ", chunks: " .. modgen.manifest.chunks
+    local txt2 = "size: " .. modgen.pretty_size(modgen.manifest.size) ..
+        ", chunks: " .. modgen.manifest.chunks ..
+        ", unique nodes: " .. modgen.manifest.next_id
 
     player:hud_change(data.text, "text", txt)
     player:hud_change(data.text2, "text", txt2)
