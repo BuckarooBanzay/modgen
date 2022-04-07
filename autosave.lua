@@ -12,7 +12,8 @@ local function worker()
         local mapblock_pos = modgen.get_mapblock_bounds_from_chunk(chunk_pos)
         local min = modgen.get_mapblock_bounds_from_mapblock(mapblock_pos)
         modgen.export("singleplayer", min, min, true, false, function(stats)
-            minetest.chat_send_all("[modgen] Changed " .. stats.bytes .. " bytes in " .. stats.millis .. " ms")
+            local sign = stats.bytes > 0 and "+" or ""
+            minetest.chat_send_all("[modgen] Changed: " .. sign .. stats.bytes .. " bytes in " .. stats.millis .. " ms")
         end)
     end
 
