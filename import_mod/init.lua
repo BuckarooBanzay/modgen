@@ -7,11 +7,12 @@ local modname = minetest.get_current_modname()
 local MP = minetest.get_modpath(modname)
 
 local import_mod = {
-  -- storage
-  storage = minetest.get_mod_storage()
+	-- storage
+	storage = minetest.get_mod_storage()
 }
 
 -- local functions/helpers
+loadfile(MP .. "/decode.lua")(import_mod)
 loadfile(MP .. "/load_chunk.lua")(import_mod)
 loadfile(MP .. "/register_mapgen.lua")(import_mod)
 loadfile(MP .. "/read_manifest.lua")(import_mod)
@@ -27,13 +28,13 @@ import_mod.uid_check(manifest)
 
 -- check if the nodes are available in the current world
 minetest.register_on_mods_loaded(function()
-  import_mod.nodename_check(manifest)
+	import_mod.nodename_check(manifest)
 end)
 
 -- initialize mapgen
 import_mod.register_mapgen(manifest)
 
 if minetest.get_modpath("modgen") then
-  -- modgen available, make it aware of the loaded import_mod
-  modgen.register_import_mod(manifest, MP)
+	-- modgen available, make it aware of the loaded import_mod
+	modgen.register_import_mod(manifest, MP)
 end

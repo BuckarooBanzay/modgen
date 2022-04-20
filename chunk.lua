@@ -1,12 +1,5 @@
 --- chunk functions
 --
--- Chunk on-disk format:
---
--- * uint8: # of stored mapblocks
--- * uint8[4096 * #mapblocks]: node-ids
--- * uint8[4096 * #mapblocks]: param1
--- * uint8[4096 * #mapblocks]: param2
--- * uint8[...]: chunk manifest in json format
 
 function modgen.export_chunk(chunk_pos, filename)
 	local min_mapblock, max_mapblock = modgen.get_mapblock_bounds_from_chunk(chunk_pos)
@@ -33,24 +26,28 @@ function modgen.export_chunk(chunk_pos, filename)
 	return #data
 end
 
-local function encode_uint16(int)
-	local a, b = int % 0x100, int / 0x100
-	return string.char(a, b)
-end
-
 function modgen.create_chunk_data(mapblocks)
 	if #mapblocks == 0 then
 		return
 	end
 
+	-- header data (uncompressed)
+	local header =
+		-- 1 byte: version
+		string.char(modgen.version) ..
+		-- 1 byte: mapblock count
+		string.char(#mapblocks) ..
+		-- 4 bytes: mtime
+		modgen.encode_uint32(os.time())
+
+	-- main data (compressed)
 	local data = {}
-	table.insert(data, string.char(#mapblocks))
 
 	-- node_ids
 	for _, mapblock in ipairs(mapblocks) do
 		local node_ids = mapblock.node_ids
 		for i=1,#node_ids do
-			table.insert(data, encode_uint16(node_ids[i]))
+			table.insert(data, modgen.encode_uint16(node_ids[i]))
 		end
 	end
 
@@ -92,5 +89,5 @@ function modgen.create_chunk_data(mapblocks)
 	local json = minetest.write_json(chunk_manifest)
 	table.insert(data, json)
 
-	return minetest.compress(table.concat(data), "deflate")
+	return header .. minetest.compress(table.concat(data), "deflate")
 end
