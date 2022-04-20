@@ -7,7 +7,7 @@ minetest.register_chatcommand("modgen_stats", {
 		end
 
 		return true, "Size: " .. modgen.pretty_size(modgen.manifest.size) ..
-			", hhunks: " .. modgen.manifest.chunks ..
+			", chunks: " .. modgen.manifest.chunks ..
 			", unique nodes: " .. modgen.manifest.next_id
 	end
 })

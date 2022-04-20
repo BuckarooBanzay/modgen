@@ -88,10 +88,10 @@ function modgen.get_chunk_filename(chunk_pos)
 end
 
 function modgen.write_chunk(data, filename)
-    local file = env.io.open(filename,"wb")
-    if not file then
-        error("could not open file: " .. filename)
-    end
+	local file = env.io.open(filename,"wb")
+	if not file then
+		error("could not open file: " .. filename)
+	end
 	file:write(data)
 	if file and file:close() then
 		return
@@ -152,20 +152,20 @@ end
 
 
 local ranges = {
-    { size=1000*1000, suffix="MB" },
-    { size=1000, suffix="kB" }
+	{ size=1000*1000, suffix="MB" },
+	{ size=1000, suffix="kB" }
 }
 
 --- returns a formatted size as string
 -- @param bytes the size in bytes
 -- @return the formatted string
 function modgen.pretty_size(bytes)
-    for _, range in ipairs(ranges) do
-        if bytes > range.size then
-            return (math.floor(bytes / range.size * 100) / 100) .. " " .. range.suffix
-        end
-    end
-    return bytes .. " bytes"
+	for _, range in ipairs(ranges) do
+		if bytes > range.size then
+			return (math.floor(bytes / range.size * 100) / 100) .. " " .. range.suffix
+		end
+	end
+	return bytes .. " bytes"
 end
 
 --- updates the boundaries max- and min-positions

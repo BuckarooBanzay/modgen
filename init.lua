@@ -5,40 +5,40 @@ local VERSION = 4
 
 -- mod namespace
 modgen = {
-  pos1 = {},
-  pos2 = {},
-  MOD_PATH = MP,
-  CHUNK_LENGTH = 80,
+	pos1 = {},
+	pos2 = {},
+	MOD_PATH = MP,
+	CHUNK_LENGTH = 80,
 
-  -- current version
-  version = VERSION,
+	-- current version
+	version = VERSION,
 
-  -- autosave feature
-  autosave = storage:get_int("autosave") == 1,
+	-- autosave feature
+	autosave = storage:get_int("autosave") == 1,
 
-  -- mod storage
-  storage = storage,
+	-- mod storage
+	storage = storage,
 
-  -- export path for the generated mod
-  export_path = minetest.get_worldpath() .. "/modgen_mod_export",
+	-- export path for the generated mod
+	export_path = minetest.get_worldpath() .. "/modgen_mod_export",
 
-  -- manifest of already existing import-mod if available
-  manifest = {
-    -- stats
-    size = 0,
-    chunks = 0,
+	-- manifest of already existing import-mod if available
+	manifest = {
+		-- stats
+		size = 0,
+		chunks = 0,
 
-    -- exported name to nodeid mapping
-    node_mapping = {},
-    -- next nodeid
+		-- exported name to nodeid mapping
+		node_mapping = {},
+		-- next nodeid
 
-    next_id = 0,
-    -- current export/import version
-    version = VERSION
-  },
+		next_id = 0,
+		-- current export/import version
+		version = VERSION
+	},
 
-  -- enables saving mapblocks in-place
-  enable_inplace_save = false
+	-- enables saving mapblocks in-place
+	enable_inplace_save = false
 }
 
 -- create export directories
@@ -50,12 +50,12 @@ local global_env = _G
 
 local ie = minetest.request_insecure_environment and minetest.request_insecure_environment()
 if ie then
-  print("[modgen] using insecure environment")
-  -- register insecure environment
-  global_env = ie
+	print("[modgen] using insecure environment")
+	-- register insecure environment
+	global_env = ie
 
-  -- enable in-place saving
-  modgen.enable_inplace_save = true
+	-- enable in-place saving
+	modgen.enable_inplace_save = true
 end
 
 -- pass on global env (secure/insecure)
