@@ -3,10 +3,6 @@ local import_mod = ...
 local modname = minetest.get_current_modname()
 local MP = minetest.get_modpath(modname)
 
-local deserialize = dofile(MP .. "/deserialize.lua")
-local localize_nodeids = dofile(MP .. "/localize_nodeids.lua")
-
-
 local function get_chunk_name(prefix, chunk_pos)
 	return prefix .. "/chunk_" .. chunk_pos.x .. "_" .. chunk_pos.y .. "_" .. chunk_pos.z .. ".bin"
 end
@@ -56,8 +52,8 @@ function import_mod.load_chunk(chunk_pos, manifest)
 			table.insert(mapblock.param2, param2)
 		end
 
-		localize_nodeids(manifest.node_mapping, mapblock.node_ids)
-		deserialize(mapblock, mapblock_manifest.pos)
+		import_mod.localize_nodeids(manifest.node_mapping, mapblock.node_ids)
+		import_mod.deserialize(mapblock, mapblock_manifest.pos)
 	end
 
 	if chunk_manifest.mtime then

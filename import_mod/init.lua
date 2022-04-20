@@ -13,10 +13,12 @@ local import_mod = {
 
 -- local functions/helpers
 loadfile(MP .. "/load_chunk.lua")(import_mod)
-loadfile(MP .. "/mapgen.lua")(import_mod)
+loadfile(MP .. "/register_mapgen.lua")(import_mod)
 loadfile(MP .. "/read_manifest.lua")(import_mod)
 loadfile(MP .. "/nodename_check.lua")(import_mod)
 loadfile(MP .. "/uid_check.lua")(import_mod)
+loadfile(MP .. "/localize_nodeids.lua")(import_mod)
+loadfile(MP .. "/deserialize.lua")(import_mod)
 
 local manifest = import_mod.read_manifest()
 
@@ -29,7 +31,7 @@ minetest.register_on_mods_loaded(function()
 end)
 
 -- initialize mapgen
-import_mod.mapgen(manifest)
+import_mod.register_mapgen(manifest)
 
 if minetest.get_modpath("modgen") then
   -- modgen available, make it aware of the loaded import_mod

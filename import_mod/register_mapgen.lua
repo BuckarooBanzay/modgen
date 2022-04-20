@@ -10,7 +10,7 @@ local function get_chunkpos(pos)
 	return vector.floor( vector.divide(aligned_mapblock_pos, 5) )
 end
 
-function import_mod.mapgen(manifest)
+function import_mod.register_mapgen(manifest)
 	minetest.register_on_generated(function(minp)
 		import_mod.load_chunk(get_chunkpos(minp), manifest)
 	end)

@@ -1,9 +1,11 @@
+local import_mod = ...
+
 local air_content_id = minetest.get_content_id("air")
 
 -- local nodename->id cache
 local local_nodename_to_id_mapping = {} -- name -> id
 
-return function(node_mapping, node_ids)
+function import_mod.localize_nodeids(node_mapping, node_ids)
   local foreign_nodeid_to_name_mapping = {} -- id -> name
   for k, v in pairs(node_mapping) do
     foreign_nodeid_to_name_mapping[v] = k

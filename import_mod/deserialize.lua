@@ -1,5 +1,6 @@
+local import_mod = ...
 
-return function(data, mapblock_pos)
+function import_mod.deserialize(data, mapblock_pos)
 
   local pos1 = vector.multiply(mapblock_pos, 16)
   local pos2 = vector.add(pos1, 15) -- inclusive
