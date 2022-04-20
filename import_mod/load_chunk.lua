@@ -14,7 +14,6 @@ local function read_chunkdata(filename)
 		local mapblock_count = string.byte(file:read(1))
 		local mtime = import_mod.decode_uint32(file:read(4), 0)
 		local data = file:read("*all")
-		print("mb_count: " .. mapblock_count .. " mtime: " .. mtime)
 		return version, mapblock_count, mtime, minetest.decompress(data, "deflate"), #data
 	end
 end
