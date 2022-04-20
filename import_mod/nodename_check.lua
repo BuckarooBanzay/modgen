@@ -1,5 +1,6 @@
+local import_mod = ...
 
-return function(manifest)
+function import_mod.nodename_check(manifest)
     -- assemble node-list from registered lbm's
     local lbm_nodes = {}
     for _, lbm in ipairs(minetest.registered_lbms) do

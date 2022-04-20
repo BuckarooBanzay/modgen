@@ -1,36 +1,35 @@
 --- Modgen import mod
 -- writes the mapblocks back to the world
--- dependency- and global-free
+-- hard-dependency- and global-free
 
 -- mod name and path
 local modname = minetest.get_current_modname()
 local MP = minetest.get_modpath(modname)
 
--- storage
-local storage = minetest.get_mod_storage()
+local import_mod = {
+  -- storage
+  storage = minetest.get_mod_storage()
+}
 
 -- local functions/helpers
-local mapgen = loadfile(MP .. "/mapgen.lua")(storage)
-local read_manifest = dofile(MP .. "/read_manifest.lua")
-local nodename_check = dofile(MP .. "/nodename_check.lua")
+loadfile(MP .. "/load_chunk.lua")(import_mod)
+loadfile(MP .. "/mapgen.lua")(import_mod)
+loadfile(MP .. "/read_manifest.lua")(import_mod)
+loadfile(MP .. "/nodename_check.lua")(import_mod)
+loadfile(MP .. "/uid_check.lua")(import_mod)
 
-local manifest = read_manifest()
-local world_uid = storage:get_string("uid")
-if world_uid ~= "" and world_uid ~= manifest.uid then
-  -- abort if the uids don't match, something fishy might be going on
-  error("modgen uids don't match, aborting for your safety!")
-end
+local manifest = import_mod.read_manifest()
 
--- write modgen uid to world-storage
-storage:set_string("uid", manifest.uid)
+-- check world uid
+import_mod.uid_check(manifest)
 
 -- check if the nodes are available in the current world
 minetest.register_on_mods_loaded(function()
-  nodename_check(manifest)
+  import_mod.nodename_check(manifest)
 end)
 
 -- initialize mapgen
-mapgen(manifest)
+import_mod.mapgen(manifest)
 
 if minetest.get_modpath("modgen") then
   -- modgen available, make it aware of the loaded import_mod
