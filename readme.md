@@ -42,6 +42,7 @@ Chunks saved in `${import_mod}/map/chunk_${x}_${y}_${z}.bin`
 ```
 1 byte:                       serialization version
 1 byte:                       number of mapblocks in this chunk (#mapblocks)
+4 bytes:                      modification time of this chunk
 4096 * 2 * #mapblocks bytes:  node_ids of the mapblocks in (4096 * uint16) portions
 4096 * #mapblocks bytes:      param1 data of the mapblocks
 4096 * #mapblocks bytes:      param2 data of the mapblocks
