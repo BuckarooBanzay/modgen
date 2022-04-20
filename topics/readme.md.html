@@ -32,9 +32,8 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#manifest_json">manifest.json </a></li>
-<li><a href="#chunks">chunks </a></li>
-<li><a href="#versions">versions </a></li>
+<li><a href="#Chunk_manifest">Chunk manifest </a></li>
+<li><a href="#Export_versions">Export versions </a></li>
 </ul>
 
 
@@ -98,34 +97,90 @@ if the <code>modgen</code> mod is also present (optional).</p>
 
 <p>Afterwards if you mark a region and execute <code>/export</code> the chunks are written to the exported mod itself</p>
 
-<h1>Export format</h1>
+<h1>Chunk export format</h1>
 
-<p><a name="manifest_json"></a></p>
-<h2>manifest.json</h2>
+<p>Chunks saved in <code>${import_mod}/map/chunk_${x}_${y}_${z}.bin</code></p>
+<pre><code> 1 byte:                       serialization version
+ 1 byte:                       number of mapblocks in this chunk (#mapblocks)
+ 4 bytes:                      modification time of this chunk
+ 4096 * 2 * #mapblocks bytes:  node_ids of the mapblocks in (4096 * uint16) portions
+ 4096 * #mapblocks bytes:      param1 data of the mapblocks
+ 4096 * #mapblocks bytes:      param2 data of the mapblocks
+ remaining bytes:              chunk manifest in json format
+</code></pre>
 
-<p>Json file that serves as an index to look up content-id's:</p>
+
+<p><a name="Chunk_manifest"></a></p>
+<h2>Chunk manifest</h2>
+
+<p>Json-file in the following format:</p>
+
+<pre>
+{
+  <span class="string">"mapblocks"</span>: [{
+    <span class="string">"pos"</span>: {
+      <span class="string">"x"</span>: <span class="number">10</span>,
+      <span class="string">"y"</span>: -<span class="number">1</span>,
+      <span class="string">"z"</span>: <span class="number">4</span>
+    },
+    <span class="string">"has_metadata"</span>: <span class="keyword">true</span>,
+    <span class="string">"metadata"</span>: {
+      <span class="string">"meta"</span>: {},
+      <span class="string">"timers"</span>: {}
+    }
+  }],
+  <span class="string">"mtime"</span>: <span class="number">1649956501</span>
+}
+</pre>
+
+
+<p><strong>NOTE</strong>: the <code>mapblocks[].pos</code> field references absolute world-positions in mapblocks</p>
+
+<h1>Global manifest</h1>
+
+<p>Saved in <code>${import_mod}/manifest.json</code></p>
+
+<p>Json file that serves as an index to look up global infos:
+* Amount of chunks and bytes saved
+* Last modification time
+* Node-ID mapping
+* Max- and min-bounds of the chunks saved
+* Modgen version used to save this map
+* UID of the map (gets saved in the mod_storage of the world to prevent mod-misplacement)</p>
 
 
 <pre>
 {
+  <span class="string">"chunks"</span> : <span class="number">17</span>,
+  <span class="string">"mtime"</span> : <span class="number">1649956501</span>,
   <span class="string">"next_id"</span>: <span class="number">82</span>,
   <span class="string">"node_mapping"</span>: {
     <span class="string">"access_cards:palm_scanner_off"</span>: <span class="number">25</span>,
     <span class="string">"air"</span>: <span class="number">0</span>,
     <span class="string">"default:chest"</span>: <span class="number">53</span>,
     <span class="string">"digilines:wire_std_00100000"</span>: <span class="number">72</span>
-  }
+  },
+  <span class="string">"bounds"</span>: {
+    <span class="string">"min"</span>: {
+      <span class="string">"x"</span>: <span class="number">0</span>,
+      <span class="string">"y"</span>: <span class="number">0</span>,
+      <span class="string">"z"</span>: <span class="number">0</span>
+    },
+    <span class="string">"max"</span>: {
+      <span class="string">"x"</span>: <span class="number">0</span>,
+      <span class="string">"y"</span>: <span class="number">0</span>,
+      <span class="string">"z"</span>: <span class="number">0</span>
+    }
+  },
+  <span class="string">"size"</span> : <span class="number">184548</span>,
+  <span class="string">"uid"</span> : <span class="string">"970683"</span>,
+  <span class="string">"version"</span> : <span class="number">3</span>
 }
 </pre>
 
 
-<p><a name="chunks"></a></p>
-<h2>chunks</h2>
-
-<p>Mapblocks are exported in chunks with the following path-structure: <code>${export-mod}/map/chunk_${x}_${y}_${z}.bin</code></p>
-
-<p><a name="versions"></a></p>
-<h2>versions</h2>
+<p><a name="Export_versions"></a></p>
+<h2>Export versions</h2>
 
 <p>Major versions with breaking changes:</p>
 
@@ -133,7 +188,10 @@ if the <code>modgen</code> mod is also present (optional).</p>
     <li>Version <code>1</code>: Initial release</li>
     <li>Version <code>2</code>: Reordered export axes from <code>z-x-y</code> to <code>z-x-y</code> (30% size decrease)</li>
     <li>Version <code>3</code>: Export whole chunks (50% size decrease)</li>
+    <li>Version <code>4</code>: Manifest with easy accessible mtime info</li>
 </ul>
+
+<p>To migrate between the major versions export everything into the world and re-import with the new version</p>
 
 <h1>Testing</h1>
 
@@ -144,7 +202,7 @@ if the <code>modgen</code> mod is also present (optional).</p>
 <p>Usage:</p>
 
 <pre>
-docker-compose -f docker-compose.test.yml up <span class="comment">--build sut</span>
+docker-compose up <span class="comment">--build</span>
 </pre>
 
 
@@ -160,7 +218,7 @@ docker-compose -f docker-compose.test.yml up <span class="comment">--build sut</
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2022-04-20 14:55:09 </i>
+<i style="float:right;">Last updated 2022-04-20 16:34:39 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
