@@ -36,35 +36,92 @@ secure.trusted_mods = modgen
 
 Afterwards if you mark a region and execute `/export` the chunks are written to the exported mod itself
 
-# Export format
+# Chunk export format
 
-## manifest.json
+Chunks saved in `${import_mod}/map/chunk_${x}_${y}_${z}.bin`
+```
+1 byte:                       serialization version
+1 byte:                       number of mapblocks in this chunk (#mapblocks)
+4096 * 2 * #mapblocks bytes:  node_ids of the mapblocks in (4096 * uint16) portions
+4096 * #mapblocks bytes:      param1 data of the mapblocks
+4096 * #mapblocks bytes:      param2 data of the mapblocks
+remaining bytes:              [chunk manifest](#chunk-manifest) in json format
+```
 
-Json file that serves as an index to look up content-id's:
+## Chunk manifest
+
+Json-file in the following format:
+```json
+{
+  "mapblocks": [{
+    "pos": {
+      "x": 10,
+      "y": -1,
+      "z": 4
+    },
+    "has_metadata": true,
+    "metadata": {
+      "meta": {},
+      "timers": {}
+    }
+  }],
+  "mtime": 1649956501
+}
+```
+
+**NOTE**: the `mapblocks[].pos` field references absolute world-positions in mapblocks
+
+# Global manifest
+
+Saved in `${import_mod}/manifest.json`
+
+Json file that serves as an index to look up global infos:
+* Amount of chunks and bytes saved
+* Last modification time
+* Node-ID mapping
+* Max- and min-bounds of the chunks saved
+* Modgen version used to save this map
+* UID of the map (gets saved in the mod_storage of the world to prevent mod-misplacement)
 
 ```json
 {
+  "chunks" : 17,
+  "mtime" : 1649956501,
   "next_id": 82,
   "node_mapping": {
     "access_cards:palm_scanner_off": 25,
     "air": 0,
     "default:chest": 53,
     "digilines:wire_std_00100000": 72
-  }
+  },
+  "bounds": {
+    "min": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "max": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  },
+  "size" : 184548,
+  "uid" : "970683",
+  "version" : 3
 }
 ```
 
-## chunks
-
-Mapblocks are exported in chunks with the following path-structure: `${export-mod}/map/chunk_${x}_${y}_${z}.bin`
-
-## versions
+## Export versions
 
 Major versions with breaking changes:
 
 * Version `1`: Initial release
 * Version `2`: Reordered export axes from `z-x-y` to `z-x-y` (30% size decrease)
 * Version `3`: Export whole chunks (50% size decrease)
+* Version `4`: Manifest with easy accessible mtime info
+
+To migrate between the major versions export everything into the world and re-import with the new version
 
 # Testing
 
@@ -74,7 +131,7 @@ Requirements:
 
 Usage:
 ```bash
-docker-compose -f docker-compose.test.yml up --build sut
+docker-compose up --build
 ```
 
 # License

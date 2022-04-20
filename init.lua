@@ -1,7 +1,7 @@
 local MP = minetest.get_modpath("modgen")
 local storage = minetest.get_mod_storage()
 
-local VERSION = 3
+local VERSION = 4
 
 -- mod namespace
 modgen = {
@@ -64,6 +64,7 @@ loadfile(MP.."/manifest.lua")(global_env)
 
 dofile(MP.."/hud.lua")
 dofile(MP.."/debug.lua")
+dofile(MP.."/encode.lua")
 dofile(MP.."/chunk.lua")
 dofile(MP.."/markers.lua")
 dofile(MP.."/register.lua")

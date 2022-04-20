@@ -12,6 +12,7 @@ local import_mod = {
 }
 
 -- local functions/helpers
+loadfile(MP .. "/decode.lua")(import_mod)
 loadfile(MP .. "/load_chunk.lua")(import_mod)
 loadfile(MP .. "/register_mapgen.lua")(import_mod)
 loadfile(MP .. "/read_manifest.lua")(import_mod)
