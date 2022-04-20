@@ -46,7 +46,7 @@ Chunks saved in `${import_mod}/map/chunk_${x}_${y}_${z}.bin`
 4096 * 2 * #mapblocks bytes:  node_ids of the mapblocks in (4096 * uint16) portions
 4096 * #mapblocks bytes:      param1 data of the mapblocks
 4096 * #mapblocks bytes:      param2 data of the mapblocks
-remaining bytes:              [chunk manifest](#chunk-manifest) in json format
+remaining bytes:              chunk manifest in json format
 ```
 
 ## Chunk manifest
