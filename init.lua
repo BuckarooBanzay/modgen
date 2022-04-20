@@ -74,6 +74,7 @@ dofile(MP.."/export.lua")
 dofile(MP.."/autosave.lua")
 dofile(MP.."/commands/stats.lua")
 dofile(MP.."/commands/export.lua")
+dofile(MP.."/commands/export_here.lua")
 dofile(MP.."/commands/autosave.lua")
 dofile(MP.."/commands/pos.lua")
 
