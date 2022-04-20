@@ -34,6 +34,7 @@ cat /root/.minetest/worlds/world/modgen_mod_export/manifest.json
 
 echo "Cleanup"
 rm -rf /root/.minetest/worlds/world/worldmods/stage2
+rm /root/.minetest/worlds/world/map.sqlite
 
 echo "Preparing stage3: import"
 cp -R /stages/stage3 /root/.minetest/worlds/world/worldmods/stage3

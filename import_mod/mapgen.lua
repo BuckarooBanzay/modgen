@@ -1,3 +1,5 @@
+local storage = ...
+
 local modname = minetest.get_current_modname()
 local MP = minetest.get_modpath(modname)
 
@@ -65,7 +67,12 @@ local function load_chunk(chunk_pos, manifest)
 
 		localize_nodeids(manifest.node_mapping, mapblock.node_ids)
 		deserialize(mapblock, mapblock_manifest.pos)
-end
+	end
+
+	if chunk_manifest.mtime then
+		-- write emerge chunk mtime to modstorage
+		storage:set_int(minetest.pos_to_string(chunk_pos), chunk_manifest.mtime)
+	end
 end
 
 return function(manifest)

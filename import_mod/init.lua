@@ -10,7 +10,7 @@ local MP = minetest.get_modpath(modname)
 local storage = minetest.get_mod_storage()
 
 -- local functions/helpers
-local mapgen = dofile(MP .. "/mapgen.lua")
+local mapgen = loadfile(MP .. "/mapgen.lua")(storage)
 local read_manifest = dofile(MP .. "/read_manifest.lua")
 local nodename_check = dofile(MP .. "/nodename_check.lua")
 
