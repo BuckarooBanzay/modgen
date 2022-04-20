@@ -42,6 +42,13 @@ local function worker(ctx)
 	-- increment time usage
 	ctx.micros = ctx.micros + t_delta
 
+	-- update bounds
+	modgen.manifest.bounds = modgen.manifest.bounds or {
+		max = ctx.current_pos,
+		min = ctx.current_pos
+	}
+	modgen.update_bounds(ctx.current_pos, modgen.manifest.bounds)
+
 	if existing_filesize > 0 and count == 0 then
 		-- chunk removed
 		modgen.remove_chunk(ctx.current_pos)

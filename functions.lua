@@ -167,3 +167,15 @@ function modgen.pretty_size(bytes)
     end
     return bytes .. " bytes"
 end
+
+--- updates the boundaries max- and min-positions
+function modgen.update_bounds(current_pos, bounds)
+	for _, axis in ipairs({"x","y","z"}) do
+		if current_pos[axis] < bounds.min[axis] then
+			bounds.min[axis] = current_pos[axis]
+		end
+		if current_pos[axis] > bounds.max[axis] then
+			bounds.max[axis] = current_pos[axis]
+		end
+	end
+end
