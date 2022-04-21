@@ -3,11 +3,23 @@ local import_mod = ...
 local modname = minetest.get_current_modname()
 local MP = minetest.get_modpath(modname)
 
-local function get_chunk_name(prefix, chunk_pos)
-	return prefix .. "/chunk_" .. chunk_pos.x .. "_" .. chunk_pos.y .. "_" .. chunk_pos.z .. ".bin"
+local function get_chunk_name(chunk_pos)
+	return MP .. "/map/chunk_" .. chunk_pos.x .. "_" .. chunk_pos.y .. "_" .. chunk_pos.z .. ".bin"
 end
 
-local function read_chunkdata(filename)
+function import_mod.read_chunk_header(chunk_pos)
+	local filename = get_chunk_name(chunk_pos)
+	local file = io.open(filename, "rb")
+	if file then
+		local version = string.byte(file:read(1))
+		local mapblock_count = string.byte(file:read(1))
+		local mtime = import_mod.decode_uint32(file:read(4), 0)
+		return version, mapblock_count, mtime
+	end
+end
+
+local function read_chunkdata(chunk_pos)
+	local filename = get_chunk_name(chunk_pos)
 	local file = io.open(filename, "rb")
 	if file then
 		local version = string.byte(file:read(1))
@@ -19,9 +31,10 @@ local function read_chunkdata(filename)
 end
 
 function import_mod.load_chunk(chunk_pos, manifest)
-	local filename = get_chunk_name(MP .. "/map/", chunk_pos)
-	local version, mapblock_count, _, chunk_data = read_chunkdata(filename)
+	local version, mapblock_count, _, chunk_data = read_chunkdata(chunk_pos)
 	if not chunk_data then
+		-- write current os.time to modstorage
+		import_mod.storage:set_int(minetest.pos_to_string(chunk_pos), os.time())
 		return
 	end
 	if version ~= manifest.version then
