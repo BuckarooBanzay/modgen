@@ -13,6 +13,7 @@ local import_mod = {
 
 -- local functions/helpers
 loadfile(MP .. "/decode.lua")(import_mod)
+loadfile(MP .. "/util.lua")(import_mod)
 loadfile(MP .. "/load_chunk.lua")(import_mod)
 loadfile(MP .. "/register_mapgen.lua")(import_mod)
 loadfile(MP .. "/read_manifest.lua")(import_mod)
@@ -37,4 +38,9 @@ import_mod.register_mapgen(manifest)
 if minetest.get_modpath("modgen") then
 	-- modgen available, make it aware of the loaded import_mod
 	modgen.register_import_mod(manifest, MP)
+end
+
+-- check if the auto-update feature is enabled
+if minetest.settings:get_bool("import_mod.auto_update.enabled") then
+	loadfile(MP .. "/auto_update.lua")(import_mod)
 end
