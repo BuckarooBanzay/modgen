@@ -74,7 +74,6 @@ function modgen.get_mapblock_bounds_from_chunk(chunk_pos)
 	return min, max
 end
 
-
 function modgen.get_mapblock_bounds_from_mapblock(mapblock)
 	local min = vector.multiply(mapblock, 16)
 	local max = vector.add(min, 15)

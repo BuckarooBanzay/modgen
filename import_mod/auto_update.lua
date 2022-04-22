@@ -20,7 +20,7 @@ local function check_player_pos(player)
     local chunk_pos = import_mod.get_chunkpos(ppos)
 
     -- cache access
-    local cache_key =minetest.pos_to_string(chunk_pos)
+    local cache_key = minetest.pos_to_string(chunk_pos)
     if cache[cache_key] then
         return
     end
@@ -34,12 +34,17 @@ local function check_player_pos(player)
         -- the chunk isn't available in the mod
         return
     end
-    if not world_mtime then
-        -- the chunk mtime has not been registered in-world
+
+    if world_mtime and world_mtime >= mod_mtime then
+        -- world chunk is same or newer (?) than the one in the mod
         return
     end
 
-    -- TODO: compare timestamps and delete_area if a newer chunk is available
+	local mapblock_min, mapblock_max = import_mod.get_mapblock_bounds_from_chunk(chunk_pos)
+	local min = import_mod.get_mapblock_bounds_from_mapblock(mapblock_min)
+	local _, max = import_mod.get_mapblock_bounds_from_mapblock(mapblock_max)
+
+    minetest.delete_area(min, max)
 end
 
 local function check_players()
@@ -49,4 +54,5 @@ local function check_players()
     minetest.after(1, check_players)
 end
 
+print("[modgen] map auto-update enabled")
 minetest.after(1, check_players)
