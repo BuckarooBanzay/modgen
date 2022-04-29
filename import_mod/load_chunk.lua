@@ -30,6 +30,9 @@ local function read_chunkdata(chunk_pos)
 	end
 end
 
+-- local vars for faster access
+local insert, byte, decode_uint16 = table.insert, string.byte, import_mod.decode_uint16
+
 function import_mod.load_chunk(chunk_pos, manifest)
 	local version, mapblock_count, _, chunk_data = read_chunkdata(chunk_pos)
 	if not chunk_data then
@@ -55,13 +58,13 @@ function import_mod.load_chunk(chunk_pos, manifest)
 		}
 
 		for i=1,4096 do
-			local node_id = import_mod.decode_uint16(chunk_data, ((mbi-1) * 4096 * 2) + (i * 2) - 2)
-			local param1 = string.byte(chunk_data, (4096 * 2 * mapblock_count) + ((mbi-1) * 4096) + i)
-			local param2 = string.byte(chunk_data, (4096 * 3 * mapblock_count) + ((mbi-1) * 4096) + i)
+			local node_id = decode_uint16(chunk_data, ((mbi-1) * 4096 * 2) + (i * 2) - 2)
+			local param1 = byte(chunk_data, (4096 * 2 * mapblock_count) + ((mbi-1) * 4096) + i)
+			local param2 = byte(chunk_data, (4096 * 3 * mapblock_count) + ((mbi-1) * 4096) + i)
 
-			table.insert(mapblock.node_ids, node_id)
-			table.insert(mapblock.param1, param1)
-			table.insert(mapblock.param2, param2)
+			insert(mapblock.node_ids, node_id)
+			insert(mapblock.param1, param1)
+			insert(mapblock.param2, param2)
 		end
 
 		import_mod.localize_nodeids(manifest.node_mapping, mapblock.node_ids)

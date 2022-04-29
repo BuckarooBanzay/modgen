@@ -26,6 +26,9 @@ function modgen.export_chunk(chunk_pos, filename)
 	return #data
 end
 
+-- local vars for faster access
+local char, encode_uint16, insert = string.char, modgen.encode_uint16, table.insert
+
 function modgen.create_chunk_data(mapblocks)
 	if #mapblocks == 0 then
 		return
@@ -34,9 +37,9 @@ function modgen.create_chunk_data(mapblocks)
 	-- header data (uncompressed)
 	local header =
 		-- 1 byte: version
-		string.char(modgen.version) ..
+		char(modgen.version) ..
 		-- 1 byte: mapblock count
-		string.char(#mapblocks) ..
+		char(#mapblocks) ..
 		-- 4 bytes: mtime
 		modgen.encode_uint32(os.time())
 
@@ -47,7 +50,7 @@ function modgen.create_chunk_data(mapblocks)
 	for _, mapblock in ipairs(mapblocks) do
 		local node_ids = mapblock.node_ids
 		for i=1,#node_ids do
-			table.insert(data, modgen.encode_uint16(node_ids[i]))
+			insert(data, encode_uint16(node_ids[i]))
 		end
 	end
 
@@ -55,7 +58,7 @@ function modgen.create_chunk_data(mapblocks)
 	for _, mapblock in ipairs(mapblocks) do
 		local param1 = mapblock.param1
 		for i=1,#param1 do
-			table.insert(data, string.char(param1[i]))
+			insert(data, char(param1[i]))
 		end
 	end
 
@@ -63,7 +66,7 @@ function modgen.create_chunk_data(mapblocks)
 	for _, mapblock in ipairs(mapblocks) do
 		local param2 = mapblock.param2
 		for i=1,#param2 do
-			table.insert(data, string.char(param2[i]))
+			insert(data, char(param2[i]))
 		end
 	end
 
@@ -83,11 +86,11 @@ function modgen.create_chunk_data(mapblocks)
 			mapblock_manifest.metadata = mapblock.metadata
 		end
 
-		table.insert(chunk_manifest.mapblocks, mapblock_manifest)
+		insert(chunk_manifest.mapblocks, mapblock_manifest)
 	end
 
 	local json = minetest.write_json(chunk_manifest)
-	table.insert(data, json)
+	insert(data, json)
 
 	return header .. minetest.compress(table.concat(data), "deflate")
 end
