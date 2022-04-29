@@ -1,6 +1,9 @@
 --- chunk functions
 --
 
+-- local vars for faster access
+local char, encode_uint16, insert = string.char, modgen.encode_uint16, table.insert
+
 function modgen.export_chunk(chunk_pos, filename)
 	local min_mapblock, max_mapblock = modgen.get_mapblock_bounds_from_chunk(chunk_pos)
 	local mapblocks = {}
@@ -10,7 +13,7 @@ function modgen.export_chunk(chunk_pos, filename)
 				local mapblock_pos = {x=x, y=y, z=z}
 				local mapblock = modgen.serialize_mapblock(mapblock_pos)
 				if not mapblock.only_air then
-					table.insert(mapblocks, mapblock)
+					insert(mapblocks, mapblock)
 				end
 			end
 		end
@@ -25,9 +28,6 @@ function modgen.export_chunk(chunk_pos, filename)
 	modgen.write_chunk(data, filename)
 	return #data
 end
-
--- local vars for faster access
-local char, encode_uint16, insert = string.char, modgen.encode_uint16, table.insert
 
 function modgen.create_chunk_data(mapblocks)
 	if #mapblocks == 0 then

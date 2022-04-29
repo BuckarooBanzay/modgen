@@ -36,6 +36,9 @@ local ignore_content_id = minetest.get_content_id("ignore")
 -- mapping from local node-id to export-node-id
 local external_node_id_mapping = {}
 
+-- local vars for faster access
+local insert = table.insert
+
 --- Serializes the mapblock at the given position
 -- @param pos the node-position
 -- @return @{mapblock_data}
@@ -108,9 +111,9 @@ function modgen.serialize_mapblock(mapblock_pos)
 		-- map node_id
 		node_id = external_node_id_mapping[node_id]
 
-		table.insert(data.node_ids, node_id)
-		table.insert(data.param1, param1[i])
-		table.insert(data.param2, param2[i])
+		insert(data.node_ids, node_id)
+		insert(data.param1, param1[i])
+		insert(data.param2, param2[i])
 
 		local count = node_id_count[node_id] or 0
 		node_id_count[node_id] = count + 1
