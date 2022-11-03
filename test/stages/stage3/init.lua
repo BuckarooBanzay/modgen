@@ -15,11 +15,9 @@ local function do_exit_success()
   minetest.request_shutdown("success")
 end
 
-if minetest.settings:get_bool("enable_integration_test") then
-  minetest.after(0.5, function()
-    -- commence pyramid of doom
-    do_emerge(function()
-      do_exit_success()
-    end)
+minetest.after(0.5, function()
+  -- commence pyramid of doom
+  do_emerge(function()
+    do_exit_success()
   end)
-end
+end)

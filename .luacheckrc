@@ -15,5 +15,5 @@ read_globals = {
 	"VoxelArea",
 
 	-- testing
-	"mineunit", "sourcefile", "assert", "describe", "it"
+	"mtt"
 }

@@ -80,3 +80,7 @@ dofile(MP.."/commands/pos.lua")
 
 -- try to read existing manifest in worldpath
 modgen.read_manifest(modgen.export_path .. "/manifest.json")
+
+if minetest.get_modpath("mtt") then
+	dofile(MP.."/iterator_next.spec.lua")
+end

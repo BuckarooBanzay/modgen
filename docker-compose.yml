@@ -6,12 +6,9 @@ services:
    context: ./test
    args:
     ENGINE_VERSION: ${ENGINE_VERSION:-5.5.0}
-  user: root
   volumes:
     - "./:/root/.minetest/worlds/world/worldmods/modgen/"
     - "world:/root/.minetest/worlds/world"
-  ports:
-    - "30000:30000/udp"
 
 volumes:
   world: {}

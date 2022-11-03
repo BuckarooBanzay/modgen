@@ -8,7 +8,8 @@ cp -R /stages/stage1 /root/.minetest/worlds/world/worldmods/stage1
 cat << EOF > /minetest.conf
 default_game = minetest_game
 mg_name = v7
-enable_integration_test = true
+mtt_enable = true
+mtt_filter = modgen
 EOF
 
 echo "Executing stage1"
@@ -23,7 +24,6 @@ cp -R /stages/stage2 /root/.minetest/worlds/world/worldmods/stage2
 cat << EOF > /minetest.conf
 default_game = minetest_game
 mg_name = v7
-enable_integration_test = true
 EOF
 
 echo "Executing stage2"
@@ -43,7 +43,6 @@ mv /root/.minetest/worlds/world/modgen_mod_export /root/.minetest/worlds/world/w
 cat << EOF > /minetest.conf
 default_game = minetest_game
 mg_name = singlenode
-enable_integration_test = true
 EOF
 
 echo "Executing stage3"
