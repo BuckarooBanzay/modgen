@@ -40,9 +40,9 @@ local function check_player_pos(player)
         return
     end
 
-	local mapblock_min, mapblock_max = import_mod.get_mapblock_bounds_from_chunk(chunk_pos)
-	local min = import_mod.get_mapblock_bounds_from_mapblock(mapblock_min)
-	local _, max = import_mod.get_mapblock_bounds_from_mapblock(mapblock_max)
+    local mapblock_min, mapblock_max = import_mod.get_mapblock_bounds_from_chunk(chunk_pos)
+    local min = import_mod.get_mapblock_bounds_from_mapblock(mapblock_min)
+    local _, max = import_mod.get_mapblock_bounds_from_mapblock(mapblock_max)
 
     minetest.delete_area(min, max)
 end

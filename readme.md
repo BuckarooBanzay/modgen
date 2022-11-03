@@ -16,6 +16,12 @@ Demo: https://github.com/BuckarooBanzay/mesecons_lab
 
 ![Screenshot](./screenshot.png)
 
+Features:
+* Map-as-a-mod export
+* In-place saving after export
+* Autosave
+* Autoupdate map in already generated worlds
+
 # Commands
 
 * `/pos1`, `/pos2` Set opposite corners of the export map
@@ -36,7 +42,20 @@ secure.trusted_mods = modgen
 
 Afterwards if you mark a region and execute `/export` the chunks are written to the exported mod itself
 
-# Chunk export format
+# Autoupdate
+
+You can provide updates to an already generated world if the following setting is
+enabled in the import-mod/world settings:
+```
+import_mod.auto_update.enabled = true
+```
+
+This works by comparing the modified-time of the generated chunk (written in the mod-storage) with the mtime of the chunk in the import-mod.
+The updated area will be deleted with `minetest.delete_area` and re-generated automatically.
+
+# Technical notes
+
+## Chunk export format
 
 Chunks saved in `${import_mod}/map/chunk_${x}_${y}_${z}.bin`
 ```
@@ -72,7 +91,7 @@ Json-file in the following format:
 
 **NOTE**: the `mapblocks[].pos` field references absolute world-positions in mapblocks
 
-# Global manifest
+## Global manifest
 
 Saved in `${import_mod}/manifest.json`
 
@@ -118,13 +137,13 @@ Json file that serves as an index to look up global infos:
 Major versions with breaking changes:
 
 * Version `1`: Initial release
-* Version `2`: Reordered export axes from `z-x-y` to `z-x-y` (30% size decrease)
+* Version `2`: Reordered export axes from `x-y-z` to `z-x-y` (30% size decrease)
 * Version `3`: Export whole chunks (50% size decrease)
 * Version `4`: Manifest with easy accessible mtime info
 
 To migrate between the major versions export everything into the world and re-import with the new version
 
-# Testing
+## Testing
 
 Requirements:
 * Docker
