@@ -52,7 +52,7 @@ end)
 local insert = table.insert
 
 --- Serializes the mapblock at the given position
--- @param pos the node-position
+-- @param mapblock_pos the mapblock-position
 -- @return @{mapblock_data}
 function modgen.serialize_mapblock(mapblock_pos)
 	local pos1, pos2 = modgen.get_mapblock_bounds_from_mapblock(mapblock_pos)
