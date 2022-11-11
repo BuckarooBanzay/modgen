@@ -12,7 +12,7 @@ function modgen.export_chunk(chunk_pos, filename)
 			for y=min_mapblock.y,max_mapblock.y do
 				local mapblock_pos = {x=x, y=y, z=z}
 				local mapblock = modgen.serialize_mapblock(mapblock_pos)
-				if not mapblock.only_air then
+				if not mapblock.empty then
 					insert(mapblocks, mapblock)
 				end
 			end

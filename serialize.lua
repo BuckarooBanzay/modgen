@@ -15,7 +15,7 @@
 -- @field param2 table of 4096 param2 values
 -- @field metadata @{metadata}
 -- @field has_metadata
--- @field only_air
+-- @field empty true if the mapblock only contains air or other ignored nodes
 -- @field pos @{functions.mapblock_pos}
 -- @table mapblock_data
 
@@ -70,7 +70,7 @@ function modgen.serialize_mapblock(mapblock_pos)
 		param2 = {},
 		metadata = {},
 		has_metadata = false,
-		only_air = true,
+		empty = true,
 		pos = mapblock_pos
 	}
 
@@ -87,7 +87,7 @@ function modgen.serialize_mapblock(mapblock_pos)
 		end
 
 		if node_id ~= air_content_id then
-			data.only_air = false
+			data.empty = false
 		end
 
 		if not external_node_id_mapping[node_id] then
