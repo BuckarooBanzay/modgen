@@ -33,6 +33,21 @@ end)
 local air_content_id = minetest.get_content_id("air")
 local ignore_content_id = minetest.get_content_id("ignore")
 
+-- map of ignored node_ids (node_id => true)
+local ignore_node_ids = {
+	[ignore_content_id] = true
+}
+
+-- search for other ignored node_ids
+minetest.register_on_mods_loaded(function()
+	for name, node_def in pairs(minetest.registered_nodes) do
+		if node_def.groups and node_def.groups.modgen_ignore then
+			local node_id = minetest.get_content_id(name)
+			ignore_node_ids[node_id] = true
+		end
+	end
+end)
+
 -- local vars for faster access
 local insert = table.insert
 
@@ -78,8 +93,8 @@ function modgen.serialize_mapblock(mapblock_pos)
 		local i = area:index(x,y,z)
 
 		local node_id = node_data[i]
-		if node_id == ignore_content_id then
-			-- replace ignore blocks with air
+		if ignore_node_ids[node_id] then
+			-- replace ignored blocks with air
 			node_id = air_content_id
 		end
 

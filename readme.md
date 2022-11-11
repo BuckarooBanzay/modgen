@@ -42,6 +42,28 @@ secure.trusted_mods = modgen
 
 Afterwards if you mark a region and execute `/export` the chunks are written to the exported mod itself
 
+# Ignored nodes
+
+Per default the `ignore` node is ignored from export/serialization (mapped to `air` internally)
+If you want more nodes to be excluded from the resulting export you can add the group `modgen_ignore` to them:
+
+```lua
+minetest.register_node("mymod:mynode", {
+  groups = {
+    modgen_ignore = 1
+  }
+})
+```
+
+Or override a node from another mod:
+```lua
+minetest.override_item("other_mod:other_node", {
+  groups = {
+    modgen_ignore = 1
+  }
+})
+```
+
 # Autoupdate
 
 You can provide updates to an already generated world if the following setting is
