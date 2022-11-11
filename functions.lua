@@ -178,3 +178,29 @@ function modgen.update_bounds(current_pos, bounds)
 		end
 	end
 end
+
+-- mapping from local node-id to export-node-id
+local external_node_id_mapping = {}
+
+--- returns the localized nodeid from the manifest or adds a new one
+function modgen.get_nodeid(node_id, manifest)
+	if not external_node_id_mapping[node_id] then
+		-- lookup node_id
+		local nodename = minetest.get_name_from_content_id(node_id)
+
+		if not manifest.node_mapping[nodename] then
+			-- mapping does not exist yet, create it
+			manifest.node_mapping[nodename] = manifest.next_id
+			external_node_id_mapping[node_id] = manifest.next_id
+
+			-- increment next external id
+			manifest.next_id = manifest.next_id + 1
+		else
+			-- mapping exists, look it up
+			local external_id = manifest.node_mapping[nodename]
+			external_node_id_mapping[node_id] = external_id
+		end
+	end
+
+	return external_node_id_mapping[node_id]
+end

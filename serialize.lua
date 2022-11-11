@@ -33,9 +33,6 @@ end)
 local air_content_id = minetest.get_content_id("air")
 local ignore_content_id = minetest.get_content_id("ignore")
 
--- mapping from local node-id to export-node-id
-local external_node_id_mapping = {}
-
 -- local vars for faster access
 local insert = table.insert
 
@@ -90,26 +87,8 @@ function modgen.serialize_mapblock(mapblock_pos)
 			data.empty = false
 		end
 
-		if not external_node_id_mapping[node_id] then
-			-- lookup node_id
-			local nodename = minetest.get_name_from_content_id(node_id)
-
-			if not modgen.manifest.node_mapping[nodename] then
-				-- mapping does not exist yet, create it
-				modgen.manifest.node_mapping[nodename] = modgen.manifest.next_id
-				external_node_id_mapping[node_id] = modgen.manifest.next_id
-
-				-- increment next external id
-				modgen.manifest.next_id = modgen.manifest.next_id + 1
-			else
-				-- mapping exists, look it up
-				local external_id = modgen.manifest.node_mapping[nodename]
-				external_node_id_mapping[node_id] = external_id
-			end
-		end
-
 		-- map node_id
-		node_id = external_node_id_mapping[node_id]
+		node_id = modgen.get_nodeid(node_id, modgen.manifest)
 
 		insert(data.node_ids, node_id)
 		insert(data.param1, param1[i])
