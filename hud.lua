@@ -77,6 +77,8 @@ end
 minetest.after(1, update_hud)
 
 minetest.register_on_joinplayer(function(player)
-	setup_hud(player)
-	update_player_hud(player)
+	if minetest.check_player_privs(player, { server = true }) then
+		setup_hud(player)
+		update_player_hud(player)
+	end
 end)
