@@ -13,7 +13,7 @@ function modgen.write_manifest(manifest, filename)
 	-- set mtime
 	manifest.mtime = os.time()
 
-	local file = env.io.open(filename,"w")
+	local file = env.io.open(filename,"wb")
 	local json = minetest.write_json(manifest, true)
 
 	file:write(json)
@@ -23,7 +23,7 @@ end
 --- Reads a minfest from a json file
 -- @param filename the filename of the manifest
 function modgen.read_manifest(filename)
-	local infile = io.open(filename, "r")
+	local infile = io.open(filename, "rb")
 	if not infile then
 		-- no manifest file found
 		return

@@ -107,7 +107,7 @@ end
 -- @param filename the filename
 -- @return the size in bytes or 0 if not found
 function modgen.get_filesize(filename)
-	local file = env.io.open(filename,"r")
+	local file = env.io.open(filename,"rb")
 	if file then
 		local size = file:seek("end")
 		file:close()
@@ -121,7 +121,7 @@ end
 -- @param src the source file
 -- @param target the target file
 function modgen.copyfile(src, target)
-	local infile = env.io.open(src, "r")
+	local infile = env.io.open(src, "rb")
 	local instr = infile:read("*a")
 	infile:close()
 
@@ -129,7 +129,7 @@ function modgen.copyfile(src, target)
 		return
 	end
 
-	local outfile, err = env.io.open(target, "w")
+	local outfile, err = env.io.open(target, "wb")
 	if not outfile then
 		error("File " .. target .. " could not be opened for writing! " .. err or "")
 	end
